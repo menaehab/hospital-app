@@ -10,4 +10,6 @@ return [
     'users' => 'المستخدمين',
     'user' => 'المستخدم',
     'password_confirmation' => 'تأكيد كلمة المرور',
+    'specialties' => 'التخصصات',
+    'specialty' => 'تخصص',
 ];

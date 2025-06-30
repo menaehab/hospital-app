@@ -5,41 +5,38 @@ namespace App\Filament\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
+use App\Models\Specialty;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
-use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\RoleResource\Pages;
+use App\Filament\Resources\SpecialtyResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\RoleResource\RelationManagers;
-use App\Filament\Resources\RoleResource\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\SpecialtyResource\RelationManagers;
 
-class RoleResource extends Resource
+class SpecialtyResource extends Resource
 {
-    protected static ?string $model = Role::class;
+    protected static ?string $model = Specialty::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
 
     public static function getLabel(): string
     {
-        return __('keywords.role');
+        return __('keywords.specialty');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('keywords.roles');
+        return __('keywords.specialties');
     }
 
-    public static array|string $routeMiddleware = ['can:manage_roles'];
+    public static array|string $routeMiddleware = ['can:manage_specialties'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('manage_roles');
+        return Auth::user()?->can('manage_specialties');
     }
 
     public static function form(Form $form): Form
@@ -48,16 +45,9 @@ class RoleResource extends Resource
             ->schema([
                 TextInput::make('name')
                     ->required()
+                    ->unique(ignoreRecord: true)
                     ->label(__('keywords.name'))
                     ->maxLength(255)
-                    ->columnSpanFull(),
-                Select::make('permissions')
-                    ->relationship('permissions', 'display_name')
-                    ->multiple()
-                    ->searchable()
-                    ->preload()
-                    ->label(__('keywords.permissions'))
-                    ->required()
                     ->columnSpanFull(),
             ]);
     }
@@ -67,13 +57,14 @@ class RoleResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
-                    ->searchable()->sortable()->searchable()->label(__('keywords.name')),
+                    ->searchable()
+                    ->sortable()
+                    ->label(__('keywords.name')),
             ])
             ->filters([
-                SelectFilter::make('permissions')->relationship('permissions', 'display_name')->preload()->searchable()->multiple()->label(__('keywords.permissions')),
+                //
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
@@ -87,16 +78,16 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            UsersRelationManager::class,
+            //
         ];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRoles::route('/'),
-            'create' => Pages\CreateRole::route('/create'),
-            'edit' => Pages\EditRole::route('/{record}/edit'),
+            'index' => Pages\ListSpecialties::route('/'),
+            'create' => Pages\CreateSpecialty::route('/create'),
+            'edit' => Pages\EditSpecialty::route('/{record}/edit'),
         ];
     }
 }
