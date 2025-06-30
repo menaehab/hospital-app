@@ -62,8 +62,8 @@ class User extends Authenticatable
         return $this->belongsToMany(Specialty::class, 'specialty_user', 'user_id', 'specialty_id');
     }
 
-    public function clienic()
+    public function clinic()
     {
-        return $this->belongsTo(Clienic::class);
+        return $this->belongsTo(Clinic::class);
     }
 }

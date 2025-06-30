@@ -12,8 +12,8 @@ return [
     'password_confirmation' => 'تأكيد كلمة المرور',
     'specialties' => 'التخصصات',
     'specialty' => 'تخصص',
-    'clienics' => 'العيادات',
-    'clienic' => 'عيادة',
+    'clinics' => 'العيادات',
+    'clinic' => 'عيادة',
     'image' => 'الصورة',
     'phone' => 'الهاتف',
 ];

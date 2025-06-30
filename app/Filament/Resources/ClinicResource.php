@@ -4,7 +4,7 @@ namespace App\Filament\Resources;
 
 use Filament\Forms;
 use Filament\Tables;
-use App\Models\Clienic;
+use App\Models\Clinic;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
@@ -14,25 +14,28 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\ClienicResource\RelationManagers\UsersRelationManager;
 use App\Filament\Resources\ClienicResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ClienicResource\RelationManagers;
+use App\Filament\Resources\ClinicResource\RelationManagers;
+use App\Filament\Resources\ClienicResource\Pages\EditClinic;
+use App\Filament\Resources\ClinicResource\Pages\ListClinics;
+use App\Filament\Resources\ClienicResource\Pages\CreateClinic;
+use App\Filament\Resources\ClienicResource\RelationManagers\UsersRelationManager;
 
-class ClienicResource extends Resource
+class ClinicResource extends Resource
 {
-    protected static ?string $model = Clienic::class;
+    protected static ?string $model = Clinic::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
     public static function getLabel(): string
     {
-        return __('keywords.clienic');
+        return __('keywords.clinic');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('keywords.clienics');
+        return __('keywords.clinics');
     }
 
     public static array|string $routeMiddleware = ['can:manage_clienics'];
@@ -95,9 +98,9 @@ class ClienicResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListClienics::route('/'),
-            'create' => Pages\CreateClienic::route('/create'),
-            'edit' => Pages\EditClienic::route('/{record}/edit'),
+            'index' => ListClinics::route('/'),
+            'create' => CreateClinic::route('/create'),
+            'edit' => EditClinic::route('/{record}/edit'),
         ];
     }
 }
