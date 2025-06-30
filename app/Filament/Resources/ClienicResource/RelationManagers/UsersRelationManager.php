@@ -1,14 +1,12 @@
 <?php
 
-namespace App\Filament\Resources\RoleResource\RelationManagers;
+namespace App\Filament\Resources\ClienicResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
-use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
@@ -46,32 +44,32 @@ class UsersRelationManager extends RelationManager
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                ->required()
-                ->maxLength(255)
-                ->label(__('keywords.name')),
-
-                TextInput::make('email')
+                    TextInput::make('name')
                     ->required()
-                    ->email()
-                    ->unique(ignoreRecord: true)
-                    ->label(__('keywords.email')),
+                    ->maxLength(255)
+                    ->label(__('keywords.name')),
 
-                TextInput::make('password')
-                    ->password()
-                    ->minLength(8)
-                    ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->label(__('keywords.password'))
-                    ->required(fn (string $operation) => $operation === 'create'),
+                    TextInput::make('email')
+                        ->required()
+                        ->email()
+                        ->unique(ignoreRecord: true)
+                        ->label(__('keywords.email')),
 
-                TextInput::make('password_confirmation')
-                    ->password()
-                    ->minLength(8)
-                    ->same('password')
-                    ->dehydrated(fn ($state) => filled($state))
-                    ->required(fn (string $operation) => $operation === 'create')
-                    ->label(__('keywords.password_confirmation')),
+                    TextInput::make('password')
+                        ->password()
+                        ->minLength(8)
+                        ->dehydrateStateUsing(fn ($state) => filled($state) ? bcrypt($state) : null)
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->label(__('keywords.password'))
+                        ->required(fn (string $operation) => $operation === 'create'),
+
+                    TextInput::make('password_confirmation')
+                        ->password()
+                        ->minLength(8)
+                        ->same('password')
+                        ->dehydrated(fn ($state) => filled($state))
+                        ->required(fn (string $operation) => $operation === 'create')
+                        ->label(__('keywords.password_confirmation')),
             ]);
     }
 

@@ -8,8 +8,11 @@ return [
     'password' => 'كلمة المرور',
     'permissions' => 'الصلاحيات',
     'users' => 'المستخدمين',
-    'user' => 'المستخدم',
+    'user' => 'مستخدم',
     'password_confirmation' => 'تأكيد كلمة المرور',
     'specialties' => 'التخصصات',
     'specialty' => 'تخصص',
+    'clienics' => 'العيادات',
+    'clienic' => 'عيادة',
+    'image' => 'الصورة',
 ];
