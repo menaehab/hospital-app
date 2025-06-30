@@ -1,23 +1,21 @@
 <?php
 
-namespace App\Filament\Resources\RoleResource\RelationManagers;
+namespace App\Filament\Resources\SpecialtyResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Spatie\Permission\Models\Role;
-use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Filament\Resources\RelationManagers\RelationManager;
 
-class UsersRelationManager extends RelationManager
+class UserRelationManager extends RelationManager
 {
-    protected static string $relationship = 'users';
+    protected static string $relationship = 'doctors';
 
     public static function getTitle($ownerRecord, string $pageClass): string
     {
@@ -41,7 +39,7 @@ class UsersRelationManager extends RelationManager
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return auth()->user()->can('manage_users');
+        return auth()->user()->can('manage_specialties');
     }
 
     public function form(Form $form): Form
