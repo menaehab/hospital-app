@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources;
 
+use App\Filament\Resources\RoleResource\RelationManagers\UsersRelationManager;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
@@ -11,6 +12,7 @@ use Spatie\Permission\Models\Role;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\RoleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -39,14 +41,16 @@ class RoleResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->label(__('keywords.name'))
-                    ->maxLength(255),
+                    ->maxLength(255)
+                    ->columnSpanFull(),
                 Select::make('permissions')
-                    ->relationship('permissions', 'name')
+                    ->relationship('permissions', 'display_name')
                     ->multiple()
                     ->searchable()
                     ->preload()
                     ->label(__('keywords.permissions'))
-                    ->required(),
+                    ->required()
+                    ->columnSpanFull(),
             ]);
     }
 
@@ -58,10 +62,12 @@ class RoleResource extends Resource
                     ->searchable()->sortable()->searchable()->label(__('keywords.name')),
             ])
             ->filters([
-                //
+                SelectFilter::make('permissions')->relationship('permissions', 'display_name')->preload()->searchable()->multiple()->label(__('keywords.permissions')),
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -73,7 +79,7 @@ class RoleResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UsersRelationManager::class,
         ];
     }
 
