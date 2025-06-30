@@ -21,7 +21,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'visit_view_all', 'display_name' => 'عرض جميع الزيارات'],
             ['name' => 'visit_manage', 'display_name' => 'إدارة الزيارات'],
             ['name' => 'reports_view', 'display_name' => 'عرض التقارير'],
-            ['name' => 'doctor_has_specialties', 'display_name' => 'لديه التخصصات'],
+            ['name' => 'doctor_has_specialties', 'display_name' => 'دكتور لديه تخصص'],
             ['name' => 'manage_users', 'display_name' => 'إدارة المستخدمين'],
             ['name' => 'manage_roles', 'display_name' => 'إدارة الصلاحيات'],
             ['name' => 'manage_specialties', 'display_name' => 'إدارة التخصصات'],

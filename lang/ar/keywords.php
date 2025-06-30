@@ -15,4 +15,5 @@ return [
     'clienics' => 'العيادات',
     'clienic' => 'عيادة',
     'image' => 'الصورة',
+    'phone' => 'الهاتف',
 ];

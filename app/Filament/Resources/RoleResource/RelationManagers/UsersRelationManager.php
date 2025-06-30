@@ -6,7 +6,9 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Spatie\Permission\Models\Role;
 use Illuminate\Support\Facades\Auth;
+use Filament\Forms\Components\Select;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -56,6 +58,63 @@ class UsersRelationManager extends RelationManager
                     ->email()
                     ->unique(ignoreRecord: true)
                     ->label(__('keywords.email')),
+
+                    TextInput::make('phone')
+                    ->maxLength(11)
+                    ->label(__('keywords.phone')),
+
+                    Select::make('roles')
+                        ->relationship('roles', 'name')
+                        ->label(__('keywords.role'))
+                        ->live()
+                        ->afterStateUpdated(fn (callable $set) => $set('specialties', null)),
+
+                    Select::make('specialties')
+                        ->label(__('keywords.specialties'))
+                        ->relationship('specialties', 'name')
+                        ->multiple()
+                        ->preload()
+                        ->live()
+                        ->visible(function ($get) {
+                            $roleIds = $get('roles');
+
+                            if (empty($roleIds)) return false;
+
+                            $roleIds = is_array($roleIds) ? $roleIds : [$roleIds];
+
+                            $role = Role::with('permissions')
+                                ->whereIn('id', $roleIds)
+                                ->whereHas('permissions', function($query) {
+                                    $query->where('name', 'doctor_has_specialties');
+                                })
+                                ->first();
+
+                            return $role !== null;
+                        })
+                        ->dehydrated(fn ($state) => filled($state)),
+
+                    Select::make('clienic')
+                        ->label(__('keywords.clienic'))
+                        ->relationship('clienic', 'name')
+                        ->preload()
+                        ->live()
+                        ->visible(function ($get) {
+                            $roleIds = $get('roles');
+
+                            if (empty($roleIds)) return false;
+
+                            $roleIds = is_array($roleIds) ? $roleIds : [$roleIds];
+
+                            $role = Role::with('permissions')
+                                ->whereIn('id', $roleIds)
+                                ->whereHas('permissions', function($query) {
+                                    $query->where('name', 'doctor_has_specialties');
+                                })
+                                ->first();
+
+                            return $role !== null;
+                        })
+                        ->dehydrated(fn ($state) => filled($state)),
 
                 TextInput::make('password')
                     ->password()
