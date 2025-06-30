@@ -139,6 +139,7 @@ class UsersRelationManager extends RelationManager
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()->toggleable()->label(__('keywords.name')),
                 Tables\Columns\TextColumn::make('email')->searchable()->sortable()->toggleable()->label(__('keywords.email')),
+                Tables\Columns\TextColumn::make('phone')->searchable()->sortable()->toggleable()->label(__('keywords.phone')),
             ])
             ->filters([
                 //

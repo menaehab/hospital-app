@@ -15,6 +15,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\SpecialtyResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\SpecialtyResource\RelationManagers;
+use App\Filament\Resources\SpecialtyResource\RelationManagers\UserRelationManager;
 
 class SpecialtyResource extends Resource
 {
@@ -78,7 +79,7 @@ class SpecialtyResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UserRelationManager::class,
         ];
     }
 
