@@ -2,13 +2,13 @@
 
 namespace App\Filament\Resources;
 
-use App\Filament\Resources\RoleResource\RelationManagers\UsersRelationManager;
 use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Spatie\Permission\Models\Role;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -17,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\RoleResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\RoleResource\RelationManagers;
+use App\Filament\Resources\RoleResource\RelationManagers\UsersRelationManager;
 
 class RoleResource extends Resource
 {
@@ -32,6 +33,13 @@ class RoleResource extends Resource
     public static function getPluralLabel(): string
     {
         return __('keywords.roles');
+    }
+
+    public static array|string $routeMiddleware = ['can:manage_users_and_roles'];
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->can('manage_users_and_roles');
     }
 
     public static function form(Form $form): Form

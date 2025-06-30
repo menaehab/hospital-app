@@ -22,6 +22,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'visit_manage', 'display_name' => 'إدارة الزيارات'],
             ['name' => 'reports_view', 'display_name' => 'عرض التقارير'],
             ['name' => 'doctor_has_specialties', 'display_name' => 'لديه التخصصات'],
+            ['name' => 'manage_users_and_roles', 'display_name' => 'إدارة المستخدمين والصلاحيات'],
         ];
 
         foreach ($permissions as $permission) {

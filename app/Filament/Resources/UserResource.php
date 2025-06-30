@@ -8,6 +8,7 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -29,6 +30,13 @@ class UserResource extends Resource
     public static function getPluralLabel(): string
     {
         return __('keywords.users');
+    }
+
+    public static array|string $routeMiddleware = ['can:manage_users_and_roles'];
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->can('manage_users_and_roles');
     }
 
     public static function form(Form $form): Form
