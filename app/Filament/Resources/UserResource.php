@@ -1,42 +1,37 @@
 <?php
 
-namespace App\Filament\Resources\RoleResource\RelationManagers;
+namespace App\Filament\Resources;
 
 use Filament\Forms;
+use App\Models\User;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Resources\Resource;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use App\Filament\Resources\UserResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Filament\Resources\RelationManagers\RelationManager;
+use App\Filament\Resources\UserResource\RelationManagers;
 
-class UsersRelationManager extends RelationManager
+class UserResource extends Resource
 {
-    protected static string $relationship = 'users';
+    protected static ?string $model = User::class;
 
-    public static function getTitle($ownerRecord, string $pageClass): string
-    {
-        return __('keywords.users');
-    }
-    
+    protected static ?string $navigationIcon = 'heroicon-o-users';
+
     public static function getLabel(): string
     {
         return __('keywords.user');
     }
-    
-    public static function getModelLabel(): string
-    {
-        return __('keywords.user');
-    }
-    
-    public static function getPluralModelLabel(): string
+
+    public static function getPluralLabel(): string
     {
         return __('keywords.users');
     }
 
-    public function form(Form $form): Form
+    public static function form(Form $form): Form
     {
         return $form
             ->schema([
@@ -69,19 +64,16 @@ class UsersRelationManager extends RelationManager
             ]);
     }
 
-    public function table(Table $table): Table
+    public static function table(Table $table): Table
     {
         return $table
-            ->recordTitleAttribute('name')
             ->columns([
                 Tables\Columns\TextColumn::make('name')->searchable()->sortable()->toggleable()->label(__('keywords.name')),
                 Tables\Columns\TextColumn::make('email')->searchable()->sortable()->toggleable()->label(__('keywords.email')),
+                Tables\Columns\TextColumn::make('roles.name')->searchable()->sortable()->toggleable()->label(__('keywords.role')),
             ])
             ->filters([
-                //
-            ])
-            ->headerActions([
-                Tables\Actions\CreateAction::make(),
+                SelectFilter::make('role')->relationship('roles', 'name')->label(__('keywords.role')),
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -92,5 +84,21 @@ class UsersRelationManager extends RelationManager
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
+    }
+
+    public static function getRelations(): array
+    {
+        return [
+            //
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListUsers::route('/'),
+            'create' => Pages\CreateUser::route('/create'),
+            'edit' => Pages\EditUser::route('/{record}/edit'),
+        ];
     }
 }
