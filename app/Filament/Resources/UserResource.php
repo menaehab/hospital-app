@@ -32,11 +32,11 @@ class UserResource extends Resource
         return __('keywords.users');
     }
 
-    public static array|string $routeMiddleware = ['can:manage_users_and_roles'];
+    public static array|string $routeMiddleware = ['can:manage_users'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('manage_users_and_roles');
+        return Auth::user()?->can('manage_users');
     }
 
     public static function form(Form $form): Form

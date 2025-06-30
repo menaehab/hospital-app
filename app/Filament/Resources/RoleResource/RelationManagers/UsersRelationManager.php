@@ -6,6 +6,7 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
@@ -20,21 +21,28 @@ class UsersRelationManager extends RelationManager
     {
         return __('keywords.users');
     }
-    
+
     public static function getLabel(): string
     {
         return __('keywords.user');
     }
-    
+
     public static function getModelLabel(): string
     {
         return __('keywords.user');
     }
-    
+
     public static function getPluralModelLabel(): string
     {
         return __('keywords.users');
     }
+
+    public static function canViewForRecord($ownerRecord, string $pageClass): bool
+    {
+        return auth()->user()->can('manage_users');
+    }
+
+
 
     public function form(Form $form): Form
     {
