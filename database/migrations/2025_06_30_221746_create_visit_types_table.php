@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('service_type');
             $table->decimal('price', 8, 2);
             $table->foreignId('doctor_id')->constrained('users')->cascadeOnDelete();
-            $table->foreignId('specialty_id')->constrained('specialties')->cascadeOnDelete();
             $table->timestamps();
         });
     }

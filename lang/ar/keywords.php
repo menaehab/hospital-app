@@ -16,4 +16,9 @@ return [
     'clinic' => 'عيادة',
     'image' => 'الصورة',
     'phone' => 'الهاتف',
+    'service_type' => 'نوع الخدمة',
+    'price' => 'السعر',
+    'doctor' => 'دكتور',
+    'visit_types' => 'أنواع الزيارات',
+    'visit_type' => 'نوع زياره',
 ];
