@@ -8,6 +8,7 @@ use Filament\Forms\Form;
 use App\Models\VisitType;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
@@ -16,6 +17,7 @@ use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\VisitTypeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\VisitTypeResource\RelationManagers;
+use App\Filament\Resources\VisitTypeResource\RelationManagers\UserRelationManager;
 
 class VisitTypeResource extends Resource
 {
@@ -30,6 +32,13 @@ class VisitTypeResource extends Resource
     public static function getPluralLabel(): string
     {
         return __('keywords.visit_types');
+    }
+
+    public static string|array $routeMiddleware = ['can:visit_manage'];
+
+    public static function shouldRegisterNavigation(): bool
+    {
+        return Auth::user()?->can('visit_manage');
     }
 
     public static function form(Form $form): Form
@@ -112,7 +121,7 @@ class VisitTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            //
+            UserRelationManager::class,
         ];
     }
 
