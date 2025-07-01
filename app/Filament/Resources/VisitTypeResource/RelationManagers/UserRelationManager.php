@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\SpecialtyResource\RelationManagers;
+namespace App\Filament\Resources\VisitTypeResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;
@@ -15,7 +15,7 @@ use Filament\Resources\RelationManagers\RelationManager;
 
 class UserRelationManager extends RelationManager
 {
-    protected static string $relationship = 'doctors';
+    protected static string $relationship = 'doctor';
 
     public static function getTitle($ownerRecord, string $pageClass): string
     {
@@ -39,7 +39,7 @@ class UserRelationManager extends RelationManager
 
     public static function canViewForRecord($ownerRecord, string $pageClass): bool
     {
-        return auth()->user()->can('manage_specialties');
+        return auth()->user()->can('manage_users');
     }
 
     public function form(Form $form): Form

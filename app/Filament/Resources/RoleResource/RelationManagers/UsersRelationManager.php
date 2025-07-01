@@ -93,9 +93,9 @@ class UsersRelationManager extends RelationManager
                         })
                         ->dehydrated(fn ($state) => filled($state)),
 
-                    Select::make('clienic')
-                        ->label(__('keywords.clienic'))
-                        ->relationship('clienic', 'name')
+                    Select::make('clinic')
+                        ->label(__('keywords.clinic'))
+                        ->relationship('clinic', 'name')
                         ->preload()
                         ->live()
                         ->visible(function ($get) {
