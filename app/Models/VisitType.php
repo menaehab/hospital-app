@@ -25,4 +25,9 @@ class VisitType extends Model
             User::class,'id','id','doctor_id','clinic_id'
         );
     }
+
+    public function appointments()
+    {
+        return $this->hasMany(Appointment::class);
+    }
 }
