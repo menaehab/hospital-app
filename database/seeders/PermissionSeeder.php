@@ -14,18 +14,16 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            ['name' => 'visit_create', 'display_name' => 'إنشاء زيارة'],
-            ['name' => 'visit_view', 'display_name' => 'عرض زياراته فقط'],
-            ['name' => 'visit_sumbit', 'display_name' => 'تسليم الزيارات'],
-            ['name' => 'visit_view_assigned', 'display_name' => 'عرض الزيارات الموجهة له'],
-            ['name' => 'visit_view_all', 'display_name' => 'عرض جميع الزيارات'],
-            ['name' => 'visit_manage', 'display_name' => 'إدارة الزيارات'],
-            ['name' => 'reports_view', 'display_name' => 'عرض التقارير'],
-            ['name' => 'doctor_has_specialties', 'display_name' => 'دكتور لديه تخصص'],
-            ['name' => 'manage_users', 'display_name' => 'إدارة المستخدمين'],
-            ['name' => 'manage_roles', 'display_name' => 'إدارة الصلاحيات'],
-            ['name' => 'manage_specialties', 'display_name' => 'إدارة التخصصات'],
-            ['name' => 'manage_clienics', 'display_name' => 'إدارة العيادات'],
+            // ['name' => 'appointment_sumbit', 'display_name' => 'تسليم الزيارات'], // submit appointments (used by receptionist)
+            ['name' => 'appointment_view_add_by_himself', 'display_name' => 'عرض زيارت التي سجلها فقط'], // show appointments that created by himself (used by receptionist)
+            ['name' => 'appointment_view', 'display_name' => 'عرض زيارته فقط'], // show appointments that created by himself (used by doctor)
+            ['name' => 'visit_manage', 'display_name' => 'إدارة الزيارات'], // manage appointments (used by admin)
+            ['name' => 'reports_view', 'display_name' => 'عرض التقارير'], // show reports (used by admin)
+            ['name' => 'doctor_has_specialties', 'display_name' => 'دكتور لديه تخصص'], // show doctors that has specialties (used by doctor)
+            ['name' => 'manage_users', 'display_name' => 'إدارة المستخدمين'], // manage users (used by admin)
+            ['name' => 'manage_roles', 'display_name' => 'إدارة الصلاحيات'], // manage roles (used by admin)
+            ['name' => 'manage_specialties', 'display_name' => 'إدارة التخصصات'], // manage specialties (used by admin)
+            ['name' => 'manage_clienics', 'display_name' => 'إدارة العيادات'], // manage clienics (used by admin)
         ];
 
         foreach ($permissions as $permission) {

@@ -14,9 +14,9 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->number('number')->unique();
+            $table->string('number')->unique();
             $table->enum('status', ['pending', 'finished', 'cancelled','missed'])->default('pending');
-            $table->text('note')->nullable();
+            $table->text('notes')->nullable();
             $table->boolean('submited')->default(false);
             $table->foreignId('rescptionist_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('visit_type_id')->constrained('visit_types')->cascadeOnDelete();

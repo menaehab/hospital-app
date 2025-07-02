@@ -2,8 +2,13 @@
 
 namespace App\Models;
 
+use Illuminate\Support\Facades\DB;
+use App\Models\Scopes\AppointmentScope;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 
+#[ScopedBy(AppointmentScope::class)]
 class Appointment extends Model
 {
     protected $guarded = ['id'];
@@ -17,9 +22,24 @@ class Appointment extends Model
         parent::boot();
 
         static::creating(function (Appointment $appointment) {
-            $date = now()->format('Ymd');
-            $countToday = Appointment::whereDate('created_at', now()->toDateString())->count();
-            $appointment->number = $date . '-' . ($countToday + 1);
+            return DB::transaction(function () use ($appointment) {
+                $date = now()->format('Ymd');
+
+                $latest = static::where('number', 'like', $date . '-%')
+                    ->orderBy('number', 'desc')
+                    ->lockForUpdate()
+                    ->first();
+
+                if ($latest) {
+                    $lastNumber = (int) substr($latest->number, -5);
+                    $newNumber = $lastNumber + 1;
+                } else {
+                    $newNumber = 1;
+                }
+
+                $appointment->number = $date . '-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+                $appointment->rescptionist_id = auth()->id();
+            });
         });
     }
 
@@ -28,23 +48,27 @@ class Appointment extends Model
         return $this->belongsTo(User::class);
     }
 
+
     public function visitType()
     {
         return $this->belongsTo(VisitType::class);
-    }
-    public function clinic()
-    {
-        return $this->hasOneThrough(
-            Clinic::class,
-            User::class,'id','id','doctor_id','clinic_id'
-        );
     }
 
     public function doctor()
     {
         return $this->hasOneThrough(
             User::class,
-            VisitType::class,'id','id','doctor_id','clinic_id'
+            VisitType::class,
+            'id',
+            'id',
+            'visit_type_id',
+            'doctor_id'
         );
     }
+
+    public function getClinicAttribute()
+    {
+        return $this->visitType?->doctor?->clinic;
+    }
+
 }
