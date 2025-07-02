@@ -12,4 +12,9 @@ class Clinic extends Model
     {
         return $this->hasMany(User::class);
     }
+
+    public function appointments()
+    {
+        return $this->hasManyThrough(Appointment::class, User::class,'clinic_id','id','id','doctor_id');
+    }
 }
