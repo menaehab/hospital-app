@@ -28,6 +28,11 @@ class ClinicResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
 
+    public static function getNavigationGroup(): string
+    {
+        return __('keywords.reservations');
+    }
+
     public static function getLabel(): string
     {
         return __('keywords.clinic');

@@ -31,6 +31,11 @@ class AppointmentResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-clock';
 
+    public static function getNavigationGroup(): string
+    {
+        return __('keywords.reservations');
+    }
+
     public static function getLabel(): ?string
     {
         return __('keywords.appointment');
