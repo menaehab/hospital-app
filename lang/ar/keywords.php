@@ -33,5 +33,7 @@ return [
     'appointment' => 'موعد',
     'cancelled' => 'ملغي',
     'reservations' => 'حجوزات',
-    'system_settings' => 'إعدادات النظام'
+    'system_settings' => 'إعدادات النظام',
+    'dashboard' => 'لوحة التحكم',
+    'hello' => 'مرحبًا',
 ];

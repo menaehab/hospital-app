@@ -47,26 +47,26 @@ class AppointmentResource extends Resource
         return __('keywords.appointments');
     }
 
-    public static string|array $routeMiddleware = ['canAny:appointment_view,appointment_view_add_by_himself,appointment_manage'];
+    public static string|array $routeMiddleware = ['canAny:appointment_view,appointment_view_add_by_himself,manage_appointments'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('appointment_view') || Auth::user()?->can('appointment_view_add_by_himself') || Auth::user()?->can('appointment_manage');
+        return Auth::user()?->can('appointment_view') || Auth::user()?->can('appointment_view_add_by_himself') || Auth::user()?->can('manage_appointments');
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('appointment_manage');
+        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('manage_appointments');
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('appointment_manage');
+        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('manage_appointments');
     }
 
     public static function canDelete($record): bool
     {
-        return auth()->user()?->can('appointment_manage');
+        return auth()->user()?->can('manage_appointments');
     }
 
     public static function form(Form $form): Form
@@ -203,6 +203,10 @@ class AppointmentResource extends Resource
                         'missed' => __('keywords.missed'),
                     ])
                     ->label(__('keywords.status')),
+                SelectFilter::make('doctor')
+                    ->relationship('doctor','name')
+                    ->label(__('keywords.doctor')),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),

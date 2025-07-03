@@ -42,11 +42,11 @@ class VisitTypeResource extends Resource
         return __('keywords.visit_types');
     }
 
-    public static string|array $routeMiddleware = ['can:visit_manage'];
+    public static string|array $routeMiddleware = ['can:manage_visit_types'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('visit_manage');
+        return Auth::user()?->can('manage_visit_types');
     }
 
     public static function form(Form $form): Form
