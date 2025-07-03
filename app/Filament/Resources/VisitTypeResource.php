@@ -24,6 +24,12 @@ class VisitTypeResource extends Resource
     protected static ?string $model = VisitType::class;
 
     protected static ?string $navigationIcon = 'heroicon-o-document-plus';
+
+    public static function getNavigationGroup(): string
+    {
+        return __('keywords.reservations');
+    }
+
     public static function getLabel(): string
     {
         return __('keywords.visit_type');

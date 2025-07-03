@@ -24,6 +24,11 @@ class UserResource extends Resource
 
     protected static ?string $navigationIcon = 'heroicon-o-users';
 
+    public static function getNavigationGroup(): string
+    {
+        return __('keywords.system_settings');
+    }
+
     public static function getLabel(): string
     {
         return __('keywords.user');

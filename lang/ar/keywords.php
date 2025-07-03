@@ -32,4 +32,6 @@ return [
     'appointments' => 'المواعيد',
     'appointment' => 'موعد',
     'cancelled' => 'ملغي',
+    'reservations' => 'حجوزات',
+    'system_settings' => 'إعدادات النظام'
 ];
