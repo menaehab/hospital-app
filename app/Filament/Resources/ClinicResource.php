@@ -45,11 +45,11 @@ class ClinicResource extends Resource
         return __('keywords.clinics');
     }
 
-    public static array|string $routeMiddleware = ['can:manage_clienics'];
+    public static array|string $routeMiddleware = ['can:manage_clinics'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('manage_clienics');
+        return Auth::user()?->can('manage_clinics');
     }
 
     public static function form(Form $form): Form
