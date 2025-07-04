@@ -36,4 +36,5 @@ return [
     'system_settings' => 'إعدادات النظام',
     'dashboard' => 'لوحة التحكم',
     'hello' => 'مرحبًا',
+    'submit' => 'تسليم',
 ];
