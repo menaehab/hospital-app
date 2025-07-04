@@ -12,7 +12,6 @@ use Filament\Tables\Table;
 use App\Models\Appointment;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Checkbox;
@@ -20,7 +19,9 @@ use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
+use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
@@ -190,7 +191,7 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->visible(function() {
-                        return auth()->user()->can('visit_view') || auth()->user()->can('visit_manage');
+                        return auth()->user()->can('appointment_view') || auth()->user()->can('manage_appointments');
                     })
                     ->label(__('keywords.submited')),
             ])
@@ -215,6 +216,16 @@ class AppointmentResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\BulkAction::make('submited')
+                        ->label( __('keywords.submit'))
+                        ->icon('heroicon-o-check-circle')
+                        ->color('success')
+                        ->action(function (Collection $records) {
+                            $records->each(function (Appointment $record) {
+                                $record->submited = true;
+                                $record->save();
+                            });
+                        }),
                 ]),
             ]);
     }

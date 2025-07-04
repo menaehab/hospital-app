@@ -25,11 +25,11 @@ class Appointment extends Model
             return DB::transaction(function () use ($appointment) {
                 $date = now()->format('Ymd');
 
-                $latest = static::where('number', 'like', $date . '-%')
+                $latest = DB::table('appointments')
+                    ->where('number', 'like', $date . '-%')
                     ->orderBy('number', 'desc')
                     ->lockForUpdate()
                     ->first();
-
                 if ($latest) {
                     $lastNumber = (int) substr($latest->number, -5);
                     $newNumber = $lastNumber + 1;
