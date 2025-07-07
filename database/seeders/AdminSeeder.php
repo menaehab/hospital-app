@@ -15,7 +15,7 @@ class AdminSeeder extends Seeder
     {
         $admin = User::updateOrCreate([
             'name' => 'admin',
-            'email' => 'admin@hospital.com',
+            'email' => 'admin@moderna.com',
             'password' => 'password',
         ]);
 

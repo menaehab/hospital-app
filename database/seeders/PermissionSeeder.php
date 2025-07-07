@@ -20,7 +20,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_appointments', 'display_name' => 'إدارة المواعيد'], // manage appointments (used by admin)
             ['name' => 'manage_visit_types', 'display_name' => 'إدارة أنواع الزيارات'], // manage visit types (used by admin)
             ['name' => 'reports_view', 'display_name' => 'عرض التقارير'], // show reports (used by admin)
-            ['name' => 'doctor_has_specialties', 'display_name' => 'دكتور لديه تخصص'], // show doctors that has specialties (used by doctor)
+            ['name' => 'has_specialties', 'display_name' => 'لديه تخصص'], // show doctors that has specialties (used by doctor)
             ['name' => 'manage_users', 'display_name' => 'إدارة المستخدمين'], // manage users (used by admin)
             ['name' => 'manage_roles', 'display_name' => 'إدارة الصلاحيات'], // manage roles (used by admin)
             ['name' => 'manage_specialties', 'display_name' => 'إدارة التخصصات'], // manage specialties (used by admin)

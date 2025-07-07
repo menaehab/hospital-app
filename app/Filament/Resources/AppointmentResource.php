@@ -110,7 +110,7 @@ class AppointmentResource extends Resource
                     ->label(__('keywords.doctor'))
                     ->options(function ($get) {
                         return User::whereHas('roles.permissions',function($query) {
-                            return $query->where('name', 'doctor_has_specialties');
+                            return $query->where('name', 'has_specialties');
                         })->where('clinic_id',$get('clinic'))->pluck('name', 'id');
                     })
                     ->searchable()
@@ -179,6 +179,11 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label(__('keywords.doctor')),
+                TextColumn::make('created_at')
+                ->time('h:i:s A')
+                ->searchable()
+                ->sortable()
+                ->label(__('keywords.created_at')),
                 TextColumn::make('visitType.service_type')
                     ->searchable()
                     ->sortable()
