@@ -37,4 +37,5 @@ return [
     'dashboard' => 'لوحة التحكم',
     'hello' => 'مرحبًا',
     'submit' => 'تسليم',
+    'created_at' => 'تاريخ الاضافة'
 ];

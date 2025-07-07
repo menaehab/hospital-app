@@ -71,7 +71,7 @@ class VisitTypeResource extends Resource
                         titleAttribute: 'name',
                         modifyQueryUsing: function (Builder $query) {
                             $query->whereHas('roles.permissions', function ($q) {
-                                $q->where('name', 'doctor_has_specialties');
+                                $q->where('name', 'has_specialties');
                             });
                         }
                     )
@@ -109,7 +109,7 @@ class VisitTypeResource extends Resource
                     titleAttribute: 'name',
                     modifyQueryUsing: function (Builder $query) {
                         $query->whereHas('roles.permissions', function ($q) {
-                            $q->where('name', 'doctor_has_specialties');
+                            $q->where('name', 'has_specialties');
                         });
                     }
                 )

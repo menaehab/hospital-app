@@ -89,7 +89,7 @@ class UserResource extends Resource
                         $role = Role::with('permissions')
                             ->whereIn('id', $roleIds)
                             ->whereHas('permissions', function($query) {
-                                $query->where('name', 'doctor_has_specialties');
+                                $query->where('name', 'has_specialties');
                             })
                             ->first();
 
@@ -112,7 +112,7 @@ class UserResource extends Resource
                         $role = Role::with('permissions')
                             ->whereIn('id', $roleIds)
                             ->whereHas('permissions', function($query) {
-                                $query->where('name', 'doctor_has_specialties');
+                                $query->where('name', 'has_specialties');
                             })
                             ->first();
 
