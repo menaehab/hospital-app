@@ -37,5 +37,8 @@ return [
     'dashboard' => 'لوحة التحكم',
     'hello' => 'مرحبًا',
     'submit' => 'تسليم',
-    'created_at' => 'تاريخ الاضافة'
+    'created_at' => 'تاريخ الاضافة',
+    'waiting_appointments' => 'المواعيد المنتظرة',
+    'completed_appointments' => 'المواعيد المكتملة',
+    'total_appointments' => 'إجمالي المواعيد',
 ];
