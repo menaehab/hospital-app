@@ -49,21 +49,21 @@ class AppointmentResource extends Resource
         return __('keywords.appointments');
     }
 
-    public static string|array $routeMiddleware = ['canAny:appointment_view,appointment_view_add_by_himself,manage_appointments'];
+    public static string|array $routeMiddleware = ['canAny:appointment_view,add_appointments,manage_appointments'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('appointment_view') || Auth::user()?->can('appointment_view_add_by_himself') || Auth::user()?->can('manage_appointments');
+        return Auth::user()?->can('appointment_view') || Auth::user()?->can('add_appointments') || Auth::user()?->can('manage_appointments');
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('manage_appointments');
+        return auth()->user()?->can('add_appointments') || auth()->user()?->can('manage_appointments');
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('manage_appointments');
+        return auth()->user()?->can('add_appointments') || auth()->user()?->can('manage_appointments');
     }
 
     public static function canDelete($record): bool
@@ -82,12 +82,17 @@ class AppointmentResource extends Resource
                     ->columnSpanFull()
                     ->maxLength(255),
                 Select::make('status')
-                    ->options([
+                ->options(function () {
+                    $options = [
                         'pending' => __('keywords.pending'),
-                        'finished' => __('keywords.finished'),
-                        'cancelled' => __('keywords.cancelled'),
                         'missed' => __('keywords.missed'),
-                    ])
+                    ];
+
+                    if (auth()->user()->can('manage_appointments')) {
+                        $options['cancelled'] = __('keywords.cancelled');
+                    }
+                    return $options;
+                })
                     ->required()
                     ->visibleOn('edit')
                     ->columnSpanFull()
@@ -137,8 +142,6 @@ class AppointmentResource extends Resource
                 Textarea::make('notes')
                     ->columnSpanFull()
                     ->label(__('keywords.notes')),
-                Checkbox::make('submited')
-                    ->label(__('keywords.submited')),
             ]);
     }
 
@@ -214,6 +217,16 @@ class AppointmentResource extends Resource
                     ->relationship('doctor','name')
                     ->label(__('keywords.doctor')),
 
+                SelectFilter::make('rescptionist_id')
+                    ->label(__('keywords.rescptionist'))
+                    ->options(function() {
+                        return User::whereIn('id', Appointment::query()
+                            ->pluck('rescptionist_id')
+                            ->unique()
+                            ->filter()
+                        )->pluck('name', 'id');
+                    }),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -221,7 +234,9 @@ class AppointmentResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->visible(function() {
+                        return auth()->user()->can('manage_appointments');
+                    }),
                     Tables\Actions\BulkAction::make('submited')
                         ->label( __('keywords.submit'))
                         ->icon('heroicon-o-check-circle')
@@ -231,7 +246,9 @@ class AppointmentResource extends Resource
                                 $record->submited = true;
                                 $record->save();
                             });
-                        }),
+                        })->visible(function() {
+                            return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');
+                        })
                 ]),
             ]);
     }

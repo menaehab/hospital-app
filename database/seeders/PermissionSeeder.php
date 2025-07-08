@@ -14,8 +14,8 @@ class PermissionSeeder extends Seeder
     public function run(): void
     {
         $permissions = [
-            // ['name' => 'appointment_sumbit', 'display_name' => 'تسليم الزيارات'], // submit appointments (used by receptionist)
-            ['name' => 'appointment_view_add_by_himself', 'display_name' => 'عرض زيارت التي سجلها فقط'], // show appointments that created by himself (used by receptionist)
+            ['name' => 'appointment_submit', 'display_name' => 'تسليم الزيارات'], // submit appointments (used by accountant)
+            ['name' => 'add_appointments', 'display_name' => 'إضافة زيارات'], // add appointments (used by receptionist)
             ['name' => 'appointment_view', 'display_name' => 'عرض زيارته فقط'], // show appointments that created by himself (used by doctor)
             ['name' => 'manage_appointments', 'display_name' => 'إدارة المواعيد'], // manage appointments (used by admin)
             ['name' => 'manage_visit_types', 'display_name' => 'إدارة أنواع الزيارات'], // manage visit types (used by admin)
