@@ -82,12 +82,17 @@ class AppointmentResource extends Resource
                     ->columnSpanFull()
                     ->maxLength(255),
                 Select::make('status')
-                    ->options([
+                ->options(function () {
+                    $options = [
                         'pending' => __('keywords.pending'),
-                        'finished' => __('keywords.finished'),
-                        'cancelled' => __('keywords.cancelled'),
                         'missed' => __('keywords.missed'),
-                    ])
+                    ];
+
+                    if (auth()->user()->can('manage_appointments')) {
+                        $options['cancelled'] = __('keywords.cancelled');
+                    }
+                    return $options;
+                })
                     ->required()
                     ->visibleOn('edit')
                     ->columnSpanFull()
@@ -137,8 +142,6 @@ class AppointmentResource extends Resource
                 Textarea::make('notes')
                     ->columnSpanFull()
                     ->label(__('keywords.notes')),
-                Checkbox::make('submited')
-                    ->label(__('keywords.submited')),
             ]);
     }
 
@@ -221,7 +224,9 @@ class AppointmentResource extends Resource
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                    Tables\Actions\DeleteBulkAction::make()->visible(function() {
+                        return auth()->user()->can('manage_appointments');
+                    }),
                     Tables\Actions\BulkAction::make('submited')
                         ->label( __('keywords.submit'))
                         ->icon('heroicon-o-check-circle')
@@ -231,7 +236,9 @@ class AppointmentResource extends Resource
                                 $record->submited = true;
                                 $record->save();
                             });
-                        }),
+                        })->visible(function() {
+                            return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');
+                        })
                 ]),
             ]);
     }
