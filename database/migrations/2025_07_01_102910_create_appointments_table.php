@@ -14,7 +14,7 @@ return new class extends Migration
         Schema::create('appointments', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('number')->unique();
+            $table->string('number');
             $table->enum('status', ['pending', 'finished', 'cancelled','missed'])->default('pending');
             $table->text('notes')->nullable();
             $table->boolean('submited')->default(false);

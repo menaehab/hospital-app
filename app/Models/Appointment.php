@@ -5,7 +5,6 @@ namespace App\Models;
 use Illuminate\Support\Facades\DB;
 use App\Models\Scopes\AppointmentScope;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Attributes\ScopedBy;
 
 #[ScopedBy(AppointmentScope::class)]
@@ -24,20 +23,26 @@ class Appointment extends Model
         static::creating(function (Appointment $appointment) {
             return DB::transaction(function () use ($appointment) {
                 $date = now()->format('Ymd');
+                $visitTypeId = $appointment->visit_type_id;
 
-                $latest = DB::table('appointments')
-                    ->where('number', 'like', $date . '-%')
+                $visitType = VisitType::find($visitTypeId);
+
+                $latest = Appointment::where('number', 'like', $date . '-%')
+                    ->whereHas('visitType', function($query) use ($visitType) {
+                        $query->where('doctor_id', $visitType->doctor_id);
+                    })
                     ->orderBy('number', 'desc')
                     ->lockForUpdate()
                     ->first();
+
                 if ($latest) {
-                    $lastNumber = (int) substr($latest->number, -5);
+                    $lastNumber = (int) substr($latest->number, -3);
                     $newNumber = $lastNumber + 1;
                 } else {
                     $newNumber = 1;
                 }
 
-                $appointment->number = $date . '-' . str_pad($newNumber, 5, '0', STR_PAD_LEFT);
+                $appointment->number = $date . '-' . str_pad($newNumber, 3, '0', STR_PAD_LEFT);
                 $appointment->rescptionist_id = auth()->id();
             });
         });
