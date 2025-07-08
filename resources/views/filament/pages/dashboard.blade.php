@@ -6,7 +6,7 @@
 
             <div class="grid grid-cols-1 md:grid-cols-2 gap-6 mt-8">
 
-                @if (auth()->user()->can('appointment_view_add_by_himself') ||
+                @if (auth()->user()->can('add_appointments') ||
                         auth()->user()->can('appointment_view') ||
                         auth()->user()->can('manage_appointments'))
                     <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"

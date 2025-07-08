@@ -49,21 +49,21 @@ class AppointmentResource extends Resource
         return __('keywords.appointments');
     }
 
-    public static string|array $routeMiddleware = ['canAny:appointment_view,appointment_view_add_by_himself,manage_appointments'];
+    public static string|array $routeMiddleware = ['canAny:appointment_view,add_appointments,manage_appointments'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('appointment_view') || Auth::user()?->can('appointment_view_add_by_himself') || Auth::user()?->can('manage_appointments');
+        return Auth::user()?->can('appointment_view') || Auth::user()?->can('add_appointments') || Auth::user()?->can('manage_appointments');
     }
 
     public static function canCreate(): bool
     {
-        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('manage_appointments');
+        return auth()->user()?->can('add_appointments') || auth()->user()?->can('manage_appointments');
     }
 
     public static function canEdit($record): bool
     {
-        return auth()->user()?->can('appointment_view_add_by_himself') || auth()->user()?->can('manage_appointments');
+        return auth()->user()?->can('add_appointments') || auth()->user()?->can('manage_appointments');
     }
 
     public static function canDelete($record): bool
@@ -216,6 +216,16 @@ class AppointmentResource extends Resource
                 SelectFilter::make('doctor')
                     ->relationship('doctor','name')
                     ->label(__('keywords.doctor')),
+
+                SelectFilter::make('rescptionist_id')
+                    ->label(__('keywords.rescptionist'))
+                    ->options(function() {
+                        return User::whereIn('id', Appointment::query()
+                            ->pluck('rescptionist_id')
+                            ->unique()
+                            ->filter()
+                        )->pluck('name', 'id');
+                    }),
 
             ])
             ->actions([
