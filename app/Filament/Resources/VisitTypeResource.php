@@ -79,6 +79,20 @@ class VisitTypeResource extends Resource
                     ->searchable()
                     ->required()
                     ->label(__('keywords.doctor')),
+
+                Select::make('doctor_fee_type')
+                    ->options([
+                        'fixed' => __('keywords.fixed'),
+                        'percentage' => __('keywords.percentage'),
+                    ])
+                    ->required()
+                    ->label(__('keywords.doctor_fee_type')),
+
+                TextInput::make('doctor_fee_value')
+                    ->required()
+                    ->numeric()
+                    ->minValue(0)
+                    ->label(__('keywords.doctor_fee_value')),
             ]);
     }
 
@@ -91,16 +105,27 @@ class VisitTypeResource extends Resource
                     ->sortable()
                     ->toggleable()
                     ->label(__('keywords.service_type')),
-                TextColumn::make('price')
-                    ->searchable()
-                    ->sortable()
-                    ->toggleable()
-                    ->label(__('keywords.price')),
                 TextColumn::make('doctor.name')
                     ->searchable()
                     ->sortable()
                     ->toggleable()
                     ->label(__('keywords.doctor')),
+                TextColumn::make('price')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->label(__('keywords.price')),
+                TextColumn::make('doctor_fee_type')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->formatStateUsing(fn ($state) => __('keywords.' . $state))
+                    ->label(__('keywords.doctor_fee_type')),
+                TextColumn::make('doctor_fee_value')
+                    ->searchable()
+                    ->sortable()
+                    ->toggleable()
+                    ->label(__('keywords.doctor_fee_value')),
             ])
             ->filters([
                 SelectFilter::make('doctor')
