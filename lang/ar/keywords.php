@@ -41,4 +41,8 @@ return [
     'waiting_appointments' => 'المواعيد المنتظرة',
     'completed_appointments' => 'المواعيد المكتملة',
     'total_appointments' => 'إجمالي المواعيد',
+    'doctor_fee_type' => 'نوع رسوم الدكتور',
+    'doctor_fee_value' => 'قيمة رسوم الدكتور',
+    'fixed' => 'ثابت',
+    'percentage' => 'نسبة',
 ];

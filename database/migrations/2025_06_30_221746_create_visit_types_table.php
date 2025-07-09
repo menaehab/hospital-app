@@ -15,6 +15,8 @@ return new class extends Migration
             $table->id();
             $table->string('service_type');
             $table->decimal('price', 8, 2);
+            $table->enum('doctor_fee_type', ['fixed', 'percentage'])->default('fixed');
+            $table->decimal('doctor_fee_value', 8, 2);
             $table->foreignId('doctor_id')->constrained('users')->cascadeOnDelete();
             $table->timestamps();
         });
