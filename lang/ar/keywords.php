@@ -54,4 +54,9 @@ return [
     'has_heart_disease' => 'يعاني من مرض القلب',
     'has_high_blood_pressure' => 'يعاني من مرض ارتفاع ضغط الدم',
     'address' => 'العنوان',
+    'patient_info' => 'معلومات المريض',
+    'appointment_info' => 'معلومات الموعد',
+    'choose_patient' => 'اختر المريض',
+    'search_by_code_or_name' => 'ابحث بالكود أو الاسم',
+    'choose_patient_or_fill_patient_info' => 'يجب اختيار مريض أو إدخال بيانات مريض جديد.',
 ];
