@@ -21,7 +21,7 @@ class SpecialtyResource extends Resource
 {
     protected static ?string $model = Specialty::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-pencil-square';
+    protected static ?string $navigationIcon = 'fas-user-doctor';
 
     protected static ?int $navigationSort = 1;
 

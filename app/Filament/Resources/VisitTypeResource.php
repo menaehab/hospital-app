@@ -23,7 +23,7 @@ class VisitTypeResource extends Resource
 {
     protected static ?string $model = VisitType::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-plus';
+    protected static ?string $navigationIcon = 'fas-file-invoice';
 
     protected static ?int $navigationSort = 2;
 

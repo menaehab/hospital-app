@@ -23,7 +23,7 @@ class RoleResource extends Resource
 {
     protected static ?string $model = Role::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-user-plus';
+    protected static ?string $navigationIcon = 'fas-user-tie';
 
     protected static ?int $navigationSort = 2;
 
