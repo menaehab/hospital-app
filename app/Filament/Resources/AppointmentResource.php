@@ -136,6 +136,7 @@ class AppointmentResource extends Resource
 
                                 if (auth()->user()->can('manage_appointments')) {
                                     $options['cancelled'] = __('keywords.cancelled');
+                                    $options['finished'] = __('keywords.finished');
                                 }
                                 return $options;
                             })
