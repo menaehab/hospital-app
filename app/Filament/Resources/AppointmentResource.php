@@ -14,6 +14,7 @@ use App\Models\Appointment;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AppointmentSubmission;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
@@ -23,12 +24,12 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Pages\BeforeCreate;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentsStatsOverview;
-use Filament\Resources\Pages\BeforeCreate;
 
 class AppointmentResource extends Resource
 {
@@ -254,9 +255,13 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label(__('keywords.rescptionist')),
-                IconColumn::make('submited')
+                IconColumn::make('is_submitted')
+                    ->boolean()
                     ->searchable()
                     ->sortable()
+                    ->state(function ($record) {
+                        return $record->submissions()->exists();
+                    })
                     ->visible(function() {
                         return auth()->user()->can('appointment_view') || auth()->user()->can('manage_appointments');
                     })
@@ -295,14 +300,17 @@ class AppointmentResource extends Resource
                     Tables\Actions\DeleteBulkAction::make()->visible(function() {
                         return auth()->user()->can('manage_appointments');
                     }),
-                    Tables\Actions\BulkAction::make('submited')
+                    Tables\Actions\BulkAction::make('is_submitted')
                         ->label( __('keywords.submit'))
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
+                        ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $records->each(function (Appointment $record) {
-                                $record->submited = true;
-                                $record->save();
+                            $submission = AppointmentSubmission::create([
+                                'user_id' => Auth::user()->id,
+                            ]);
+                            $records->each(function (Appointment $record) use ($submission) {
+                                $submission->appointments()->attach($record);
                             });
                         })->visible(function() {
                             return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');

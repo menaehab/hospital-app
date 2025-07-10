@@ -16,7 +16,6 @@ return new class extends Migration
             $table->string('number');
             $table->enum('status', ['pending', 'finished', 'cancelled','missed'])->default('pending');
             $table->text('notes')->nullable();
-            $table->boolean('submited')->default(false);
             $table->foreignId('rescptionist_id')->constrained('users')->cascadeOnDelete();
             $table->foreignId('visit_type_id')->constrained('visit_types')->cascadeOnDelete();
             $table->foreignId('patient_id')->constrained('patients')->cascadeOnDelete();
