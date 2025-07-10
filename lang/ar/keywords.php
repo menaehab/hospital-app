@@ -45,4 +45,13 @@ return [
     'doctor_fee_value' => 'قيمة رسوم الدكتور',
     'fixed' => 'ثابت',
     'percentage' => 'نسبة',
+    'patients' => 'المرضى',
+    'patient' => 'مريض',
+    'code' => 'الكود',
+    'age' => 'العمر',
+    'patient_and_supplies_management' => 'إدارة المرضى والمستلزمات',
+    'has_diabetes' => 'يعاني من السكري',
+    'has_heart_disease' => 'يعاني من مرض القلب',
+    'has_high_blood_pressure' => 'يعاني من مرض ارتفاع ضغط الدم',
+    'address' => 'العنوان',
 ];

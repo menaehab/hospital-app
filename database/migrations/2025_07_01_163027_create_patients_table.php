@@ -14,12 +14,13 @@ return new class extends Migration
         Schema::create('patients', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone');
-            $table->string('address');
+            $table->integer('age')->nullable();
+            $table->string('phone')->nullable();
+            $table->string('address')->nullable();
             $table->string('code')->unique();
             $table->boolean('has_diabetes')->default(false);
             $table->boolean('has_heart_disease')->default(false);
-            $table->boolean('has_hypothyroidism')->default(false);
+            $table->boolean('has_high_blood_pressure')->default(false);
             $table->timestamps();
         });
     }

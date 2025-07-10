@@ -14,7 +14,7 @@ class Patient extends Model
         'has_hypothyroidism' => 'boolean',
     ];
 
-    public function booted()
+    public static function booted()
     {
         static::creating(function (Patient $patient) {
             $date = now()->format('Ymd');
