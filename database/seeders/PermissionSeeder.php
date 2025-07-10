@@ -25,6 +25,8 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_roles', 'display_name' => 'إدارة الصلاحيات'], // manage roles (used by admin)
             ['name' => 'manage_specialties', 'display_name' => 'إدارة التخصصات'], // manage specialties (used by admin)
             ['name' => 'manage_clinics', 'display_name' => 'إدارة العيادات'], // manage clienics (used by admin)
+            ['name' => 'manage_patients', 'display_name' => 'إدارة المرضى'], // manage patients (used by admin)
+            ['name' => 'view_patients', 'display_name' => 'عرض المرضى'], // view patients (used by doctor)
         ];
 
         foreach ($permissions as $permission) {

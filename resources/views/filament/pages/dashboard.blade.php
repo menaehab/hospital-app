@@ -49,6 +49,13 @@
                         {{ __('keywords.users') }}
                     </x-filament::button>
                 @endif
+
+                @if (auth()->user()->can('manage_patients') || auth()->user()->can('view_patients'))
+                    <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
+                        tag="a" href="{{ route('filament.admin.resources.patients.index') }}">
+                        {{ __('keywords.patients') }}
+                    </x-filament::button>
+                @endif
             </div>
 
             <!-- LIVE TIME -->

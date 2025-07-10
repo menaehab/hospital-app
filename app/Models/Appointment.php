@@ -76,4 +76,9 @@ class Appointment extends Model
         return $this->visitType?->doctor?->clinic;
     }
 
+    public function patient()
+    {
+        return $this->belongsTo(Patient::class);
+    }
+
 }

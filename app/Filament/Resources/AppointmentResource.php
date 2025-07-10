@@ -6,6 +6,7 @@ use Filament\Forms;
 use App\Models\User;
 use Filament\Tables;
 use App\Models\Clinic;
+use App\Models\Patient;
 use Filament\Forms\Form;
 use App\Models\VisitType;
 use Filament\Tables\Table;
@@ -14,6 +15,7 @@ use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Columns\IconColumn;
@@ -26,6 +28,7 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentsStatsOverview;
+use Filament\Resources\Pages\BeforeCreate;
 
 class AppointmentResource extends Resource
 {
@@ -75,73 +78,124 @@ class AppointmentResource extends Resource
     {
         return $form
             ->schema([
-                TextInput::make('name')
-                    ->required()
-                    ->label(__('keywords.name'))
-                    ->visibleOn('create')
-                    ->columnSpanFull()
-                    ->maxLength(255),
-                Select::make('status')
-                ->options(function () {
-                    $options = [
-                        'pending' => __('keywords.pending'),
-                        'missed' => __('keywords.missed'),
-                    ];
+                Section::make(__('keywords.patient_info'))
+                    ->schema([
+                        Select::make('patient_id')
+                            ->label(__('keywords.choose_patient'))
+                            ->searchable()
+                            ->preload()
+                            ->live()
+                            ->requiredWithout(['name'])
+                            ->options(
+                                Patient::query()
+                                    ->orderBy('name')
+                                    ->get()
+                                    ->mapWithKeys(function ($patient) {
+                                        return [
+                                            $patient->id => "{$patient->code} - {$patient->name}",
+                                        ];
+                                    })
+                            )
+                            ->placeholder(__('keywords.search_by_code_or_name')),
 
-                    if (auth()->user()->can('manage_appointments')) {
-                        $options['cancelled'] = __('keywords.cancelled');
-                    }
-                    return $options;
-                })
-                    ->required()
-                    ->visibleOn('edit')
-                    ->columnSpanFull()
-                    ->label(__('keywords.status')),
+                        TextInput::make('name')
+                            ->required(fn ($get) => empty($get('patient_id')))
+                            ->maxLength(255)
+                            ->live()
+                            ->visible(fn ($get) => empty($get('patient_id')))
+                            ->label(__('keywords.name')),
 
-                Select::make('clinic')
-                    ->required()
-                    ->visibleOn('create')
-                    ->label(__('keywords.clinic'))
-                    ->options(function ($get) {
-                        return Clinic::pluck('name', 'id');
-                    })
-                    ->searchable()
-                    ->live()
-                    ->columnSpanFull()
-                    ->preload(),
+                        TextInput::make('age')
+                            ->numeric()
+                            ->maxLength(255)
+                            ->live()
+                            ->visible(fn ($get) => empty($get('patient_id')))
+                            ->label(__('keywords.age')),
 
-                Select::make('doctor')
-                    ->required()
-                    ->visibleOn('create')
-                    ->label(__('keywords.doctor'))
-                    ->options(function ($get) {
-                        return User::whereHas('roles.permissions',function($query) {
-                            return $query->where('name', 'has_specialties');
-                        })->where('clinic_id',$get('clinic'))->pluck('name', 'id');
-                    })
-                    ->searchable()
-                    ->live()
-                    ->visible(fn($get) => Clinic::find($get('clinic')) !== null)
-                    ->columnSpanFull()
-                    ->preload(),
+                        TextInput::make('phone')
+                            ->maxLength(11)
+                            ->live()
+                            ->visible(fn ($get) => empty($get('patient_id')))
+                            ->label(__('keywords.phone')),
 
-                Select::make('visit_type_id')
-                ->relationship('visitType','service_type')
-                ->required()
-                ->visibleOn('create')
-                ->label(__('keywords.visit_type'))
-                ->options(function ($get) {
-                    return VisitType::where('doctor_id',$get('doctor'))->pluck('service_type', 'id');
-                })
-                ->searchable()
-                ->live()
-                ->visible(fn($get) => User::find($get('doctor')) !== null)
-                ->columnSpanFull()
-                ->preload(),
+                        TextInput::make('address')
+                            ->maxLength(255)
+                            ->live()
+                            ->visible(fn ($get) => empty($get('patient_id')))
+                            ->label(__('keywords.address')),
+                    ]),
 
-                Textarea::make('notes')
-                    ->columnSpanFull()
-                    ->label(__('keywords.notes')),
+                Section::make(__('keywords.appointment_info'))
+                    ->schema([
+                        Select::make('status')
+                            ->options(function () {
+                                $options = [
+                                    'pending' => __('keywords.pending'),
+                                    'missed' => __('keywords.missed'),
+                                ];
+
+                                if (auth()->user()->can('manage_appointments')) {
+                                    $options['cancelled'] = __('keywords.cancelled');
+                                    $options['finished'] = __('keywords.finished');
+                                }
+                                return $options;
+                            })
+                            ->required()
+                            ->visibleOn('edit')
+                            ->columnSpanFull()
+                            ->label(__('keywords.status')),
+
+                        Select::make('clinic')
+                            ->required()
+                            ->visibleOn('create')
+                            ->label(__('keywords.clinic'))
+                            ->options(function ($get) {
+                                return Clinic::pluck('name', 'id');
+                            })
+                            ->searchable()
+                            ->live()
+                            ->columnSpanFull()
+                            ->preload(),
+
+                        Select::make('doctor')
+                            ->required()
+                            ->visibleOn('create')
+                            ->label(__('keywords.doctor'))
+                            ->options(function ($get) {
+                                return User::whereHas('roles.permissions', function ($query) {
+                                    return $query->where('name', 'has_specialties');
+                                })->where('clinic_id', $get('clinic'))->pluck('name', 'id');
+                            })
+                            ->searchable()
+                            ->live()
+                            ->visible(fn($get) => Clinic::find($get('clinic')) !== null)
+                            ->columnSpanFull()
+                            ->preload(),
+
+                        Select::make('visit_type_id')
+                            ->relationship('visitType', 'service_type')
+                            ->required()
+                            ->visibleOn('create')
+                            ->label(__('keywords.visit_type'))
+                            ->options(function ($get) {
+                                return VisitType::where('doctor_id', $get('doctor'))
+                                    ->get()
+                                    ->mapWithKeys(function ($visitType) {
+                                        return [
+                                            $visitType->id => $visitType->service_type . ' - ' . $visitType->price . ' ' . __('keywords.currency'),
+                                        ];
+                                    });
+                            })
+                            ->searchable()
+                            ->live()
+                            ->visible(fn($get) => User::find($get('doctor')) !== null)
+                            ->columnSpanFull()
+                            ->preload(),
+
+                        Textarea::make('notes')
+                            ->columnSpanFull()
+                            ->label(__('keywords.notes')),
+                    ]),
             ]);
     }
 
@@ -149,7 +203,7 @@ class AppointmentResource extends Resource
     {
         return $table
             ->columns([
-                TextColumn::make('name')
+                TextColumn::make('patient.name')
                     ->searchable()
                     ->sortable()
                     ->label(__('keywords.name')),
@@ -192,6 +246,10 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label(__('keywords.visit_type')),
+                TextColumn::make('visitType.price')
+                    ->searchable()
+                    ->sortable()
+                    ->label(__('keywords.price')),
                 TextColumn::make('rescptionist.name')
                     ->searchable()
                     ->sortable()
