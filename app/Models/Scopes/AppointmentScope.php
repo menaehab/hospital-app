@@ -15,7 +15,7 @@ class AppointmentScope implements Scope
     {
         if(auth()->user()->can('add_appointments')){
             $builder->whereDoesntHave('submissions');
-        } else if (auth()->user()->can('appointment_view')){
+        } else if (auth()->user()->can('view_appointments')){
             $builder->whereHas('visitType.doctor', function ($query) {
                 return $query->where('doctor_id', auth()->user()->id);
             });

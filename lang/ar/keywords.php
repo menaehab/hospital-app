@@ -60,4 +60,6 @@ return [
     'search_by_code_or_name' => 'ابحث بالكود أو الاسم',
     'choose_patient_or_fill_patient_info' => 'يجب اختيار مريض أو إدخال بيانات مريض جديد.',
     'currency' => 'ج.م',
+    'you_must_select_appointments_for_the_same_doctor_only' => 'يجب اختيار المواعيد لدكتور واحد فقط',
+    'appointment_submission' => 'تسليم المواعيد',
 ];

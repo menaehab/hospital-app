@@ -25,6 +25,7 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use Filament\Resources\Pages\BeforeCreate;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AppointmentResource\Pages;
@@ -53,11 +54,11 @@ class AppointmentResource extends Resource
         return __('keywords.appointments');
     }
 
-    public static string|array $routeMiddleware = ['canAny:appointment_view,add_appointments,manage_appointments'];
+    public static string|array $routeMiddleware = ['canAny:view_appointments,add_appointments,manage_appointments'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('appointment_view') || Auth::user()?->can('add_appointments') || Auth::user()?->can('manage_appointments');
+        return Auth::user()?->can('view_appointments') || Auth::user()?->can('add_appointments') || Auth::user()?->can('manage_appointments');
     }
 
     public static function canCreate(): bool
@@ -124,7 +125,7 @@ class AppointmentResource extends Resource
                             ->live()
                             ->visible(fn ($get) => empty($get('patient_id')))
                             ->label(__('keywords.address')),
-                    ]),
+                    ])->visibleOn('create'),
 
                 Section::make(__('keywords.appointment_info'))
                     ->schema([
@@ -263,7 +264,7 @@ class AppointmentResource extends Resource
                         return $record->submissions()->exists();
                     })
                     ->visible(function() {
-                        return auth()->user()->can('appointment_view') || auth()->user()->can('manage_appointments');
+                        return auth()->user()->can('view_appointments') || auth()->user()->can('manage_appointments');
                     })
                     ->label(__('keywords.submited')),
             ])
@@ -306,9 +307,24 @@ class AppointmentResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
+                            // NOTE: validation to check if all selected appointments have the same doctor
+
+                            $doctorIds = $records->map(function ($record) {
+                                return optional($record->visitType)->doctor_id;
+                            })->filter()->unique();
+
+                            if ($doctorIds->count() > 1) {
+                                Notification::make()
+                                    ->title('خطأ')
+                                    ->body('يجب اختيار زيارات لنفس الدكتور فقط.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
                             $submission = AppointmentSubmission::create([
                                 'user_id' => Auth::user()->id,
                             ]);
+
                             $records->each(function (Appointment $record) use ($submission) {
                                 $submission->appointments()->attach($record);
                             });

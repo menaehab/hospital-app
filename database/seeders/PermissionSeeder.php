@@ -16,10 +16,10 @@ class PermissionSeeder extends Seeder
         $permissions = [
             ['name' => 'appointment_submit', 'display_name' => 'تسليم الزيارات'], // submit appointments (used by accountant)
             ['name' => 'add_appointments', 'display_name' => 'إضافة زيارات'], // add appointments (used by receptionist)
-            ['name' => 'appointment_view', 'display_name' => 'عرض زيارته فقط'], // show appointments that created by himself (used by doctor)
+            ['name' => 'view_appointments', 'display_name' => 'عرض زيارته فقط'], // show appointments that created by himself (used by doctor)
             ['name' => 'manage_appointments', 'display_name' => 'إدارة المواعيد'], // manage appointments (used by admin)
             ['name' => 'manage_visit_types', 'display_name' => 'إدارة أنواع الزيارات'], // manage visit types (used by admin)
-            ['name' => 'reports_view', 'display_name' => 'عرض التقارير'], // show reports (used by admin)
+            ['name' => 'view_reports', 'display_name' => 'عرض التقارير'], // show reports (used by admin)
             ['name' => 'has_specialties', 'display_name' => 'لديه تخصص'], // show doctors that has specialties (used by doctor)
             ['name' => 'manage_users', 'display_name' => 'إدارة المستخدمين'], // manage users (used by admin)
             ['name' => 'manage_roles', 'display_name' => 'إدارة الصلاحيات'], // manage roles (used by admin)
