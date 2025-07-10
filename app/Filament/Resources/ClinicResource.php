@@ -26,7 +26,7 @@ class ClinicResource extends Resource
 {
     protected static ?string $model = Clinic::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-building-storefront';
+    protected static ?string $navigationIcon = 'fas-house-medical-flag';
 
     protected static ?int $navigationSort = 3;
 

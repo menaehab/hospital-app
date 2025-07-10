@@ -18,7 +18,7 @@ class Dashboard extends Page
 
     protected static ?int $navigationSort = -2;
     protected static string $view = 'filament.pages.dashboard';
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    protected static ?string $navigationIcon = 'fas-house';
 
     /**
      * Get the columns that should be used in the dashboard layout.
