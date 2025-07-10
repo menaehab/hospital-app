@@ -177,7 +177,13 @@ class AppointmentResource extends Resource
                             ->visibleOn('create')
                             ->label(__('keywords.visit_type'))
                             ->options(function ($get) {
-                                return VisitType::where('doctor_id', $get('doctor'))->pluck('service_type', 'id');
+                                return VisitType::where('doctor_id', $get('doctor'))
+                                    ->get()
+                                    ->mapWithKeys(function ($visitType) {
+                                        return [
+                                            $visitType->id => $visitType->service_type . ' - ' . $visitType->price . ' ' . __('keywords.currency'),
+                                        ];
+                                    });
                             })
                             ->searchable()
                             ->live()
@@ -239,6 +245,10 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label(__('keywords.visit_type')),
+                TextColumn::make('visitType.price')
+                    ->searchable()
+                    ->sortable()
+                    ->label(__('keywords.price')),
                 TextColumn::make('rescptionist.name')
                     ->searchable()
                     ->sortable()

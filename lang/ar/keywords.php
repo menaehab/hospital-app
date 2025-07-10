@@ -59,4 +59,5 @@ return [
     'choose_patient' => 'اختر المريض',
     'search_by_code_or_name' => 'ابحث بالكود أو الاسم',
     'choose_patient_or_fill_patient_info' => 'يجب اختيار مريض أو إدخال بيانات مريض جديد.',
+    'currency' => 'ج.م',
 ];
