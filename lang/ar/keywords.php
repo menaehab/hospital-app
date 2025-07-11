@@ -62,4 +62,5 @@ return [
     'currency' => 'ج.م',
     'you_must_select_appointments_for_the_same_doctor_only' => 'يجب اختيار المواعيد لدكتور واحد فقط',
     'appointment_submission' => 'تسليم المواعيد',
+    'in_session' => 'في الجلسة',
 ];

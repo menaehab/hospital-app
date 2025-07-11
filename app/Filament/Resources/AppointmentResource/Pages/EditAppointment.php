@@ -16,4 +16,18 @@ class EditAppointment extends EditRecord
             Actions\DeleteAction::make(),
         ];
     }
+
+    public function mutateFormDataBeforeUpdate(array $data): array
+    {
+        if ($data['status'] === 'in_session') {
+            $data['start_time'] = now();
+        }
+
+        if ($data['status'] === 'finished') {
+            $data['start_time'] = $this->record->start_time ??  $this->record->created_at;
+            $data['end_time'] = now();
+        }
+
+        return $data;
+    }
 }

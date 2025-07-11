@@ -1,10 +1,12 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PrintController;
 
 Route::redirect('/', 'admin')->name('home');
 
+Route::get('/print/appointment-submission/{submission}', [PrintController::class, 'AppointmentSubmission'])->name('print.appointment-submission');
 
 require __DIR__.'/auth.php';
 

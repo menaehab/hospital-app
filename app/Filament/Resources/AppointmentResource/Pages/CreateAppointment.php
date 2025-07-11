@@ -13,6 +13,7 @@ class CreateAppointment extends CreateRecord
 
     public function mutateFormDataBeforeCreate(array $data): array
     {
+        // creating or getting patient
         if (empty($data['patient_id'])) {
             if (empty($data['name'])) {
                 throw new \Exception(__('keywords.choose_patient_or_fill_patient_info'));
@@ -30,6 +31,17 @@ class CreateAppointment extends CreateRecord
         $data['patient_id'] = $patient->id;
 
         unset($data['name'], $data['age'], $data['phone'], $data['address']);
+
+
+        // status
+        if ($data['status'] === 'in_session') {
+            $data['start_time'] = now();
+        }
+
+        if ($data['status'] === 'finished') {
+            $data['start_time'] =  now();
+            $data['end_time'] = now();
+        }
 
         return $data;
     }

@@ -53,6 +53,10 @@ class AppointmentResource extends Resource
     {
         return __('keywords.appointments');
     }
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
 
     public static string|array $routeMiddleware = ['canAny:view_appointments,add_appointments,manage_appointments'];
 
@@ -133,6 +137,7 @@ class AppointmentResource extends Resource
                             ->options(function () {
                                 $options = [
                                     'pending' => __('keywords.pending'),
+                                    'in_session' => __('keywords.in_session'),
                                     'missed' => __('keywords.missed'),
                                 ];
 
@@ -200,6 +205,7 @@ class AppointmentResource extends Resource
                     ]),
             ]);
     }
+
 
     public static function table(Table $table): Table
     {
@@ -322,7 +328,8 @@ class AppointmentResource extends Resource
                                 return;
                             }
                             $submission = AppointmentSubmission::create([
-                                'user_id' => Auth::user()->id,
+                                'doctor_id' => Auth::user()->id,
+                                'accountant_id' => Auth::user()->id,
                             ]);
 
                             $records->each(function (Appointment $record) use ($submission) {
