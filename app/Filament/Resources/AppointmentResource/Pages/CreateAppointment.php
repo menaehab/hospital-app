@@ -34,15 +34,21 @@ class CreateAppointment extends CreateRecord
 
 
         // status
-        if ($data['status'] === 'in_session') {
+        if (isset($data['status']) && $data['status'] === 'in_session') {
             $data['start_time'] = now();
         }
 
-        if ($data['status'] === 'finished') {
-            $data['start_time'] =  now();
+        if (isset($data['status']) && $data['status'] === 'finished') {
+            $data['start_time'] = now();
             $data['end_time'] = now();
         }
 
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
 }

@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ClienicResource\Pages;
+namespace App\Filament\Resources\ClinicResource\Pages;
 
 use App\Filament\Resources\ClinicResource;
 use Filament\Actions;
@@ -15,5 +15,10 @@ class EditClinic extends EditRecord
         return [
             Actions\DeleteAction::make(),
         ];
+    }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
     }
 }

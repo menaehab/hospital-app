@@ -20,6 +20,5 @@ class AppointmentScope implements Scope
                 return $query->where('doctor_id', auth()->user()->id);
             });
         }
-
     }
 }

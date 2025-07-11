@@ -53,11 +53,6 @@ class AppointmentResource extends Resource
     {
         return __('keywords.appointments');
     }
-    protected function getRedirectUrl(): string
-    {
-        return $this->getResource()::getUrl('index');
-    }
-
     public static string|array $routeMiddleware = ['canAny:view_appointments,add_appointments,manage_appointments'];
 
     public static function shouldRegisterNavigation(): bool
@@ -145,6 +140,10 @@ class AppointmentResource extends Resource
                                     $options['cancelled'] = __('keywords.cancelled');
                                     $options['finished'] = __('keywords.finished');
                                 }
+
+                                if (auth()->user()->can('view_appointments')) {
+                                    $options['finished'] = __('keywords.finished');
+                                }
                                 return $options;
                             })
                             ->required()
@@ -225,14 +224,16 @@ class AppointmentResource extends Resource
                         return match ($state) {
                             'pending' => 'info',
                             'finished' => 'success',
+                            'in_session' => 'warning',
                             'cancelled' => 'danger',
-                            'missed' => 'warning',
+                            'missed' => 'gray',
                         };
                     })
                     ->formatStateUsing(function ($state) {
                         return match ($state) {
                             'pending' => __('keywords.pending'),
                             'finished' => __('keywords.finished'),
+                            'in_session' => __('keywords.in_session'),
                             'cancelled' => __('keywords.cancelled'),
                             'missed' => __('keywords.missed'),
                             default => ucfirst($state),

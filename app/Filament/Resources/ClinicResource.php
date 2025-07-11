@@ -14,13 +14,12 @@ use Filament\Forms\Components\TextInput;
 use Filament\Tables\Columns\ImageColumn;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
-use App\Filament\Resources\ClienicResource\Pages;
+use App\Filament\Resources\ClinicResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\ClinicResource\RelationManagers;
-use App\Filament\Resources\ClienicResource\Pages\EditClinic;
+use App\Filament\Resources\ClinicResource\Pages\EditClinic;
 use App\Filament\Resources\ClinicResource\Pages\ListClinics;
-use App\Filament\Resources\ClienicResource\Pages\CreateClinic;
-use App\Filament\Resources\ClienicResource\RelationManagers\UsersRelationManager;
+use App\Filament\Resources\ClinicResource\Pages\CreateClinic;
+use App\Filament\Resources\ClinicResource\RelationManagers\UsersRelationManager;
 
 class ClinicResource extends Resource
 {
