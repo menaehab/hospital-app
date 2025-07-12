@@ -3,102 +3,95 @@
 
 <head>
     <meta charset="UTF-8">
-    <title>تقرير المواعيد</title>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>جاري الطباعة...</title>
+
+    <script src="{{ asset('js/qz-tray.js') }}"></script>
+
     <style>
         body {
-            font-family: 'Arial', sans-serif;
-            margin: 40px;
-            direction: rtl;
-        }
-
-        .header {
+            font-family: 'Cairo', sans-serif;
+            background-color: #fef3c7;
+            /* amber-100 */
+            color: #92400e;
+            /* amber-800 */
             display: flex;
-            justify-content: space-between;
+            justify-content: center;
             align-items: center;
-            border-bottom: 2px solid #000;
-            padding-bottom: 15px;
-            margin-bottom: 25px;
+            height: 100vh;
+            margin: 0;
+            flex-direction: column;
+            text-align: center;
         }
 
-        .logo {
+        .spinner {
+            border: 6px solid #fcd34d;
+            /* amber-300 */
+            border-top: 6px solid #f59e0b;
+            /* amber-500 */
+            border-radius: 50%;
             width: 60px;
+            height: 60px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 20px;
         }
 
-        .info {
-            text-align: right;
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
         }
 
-        .info p {
-            margin: 2px 0;
-            font-size: 16px;
-        }
-
-        table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 10px;
-        }
-
-        th,
-        td {
-            border: 1px solid #000;
-            padding: 8px;
-            font-size: 14px;
-            text-align: center;
-        }
-
-        th {
-            background-color: #f0f0f0;
-        }
-
-        .footer {
-            margin-top: 40px;
-            font-size: 13px;
-            text-align: center;
+        h2 {
+            font-size: 20px;
         }
     </style>
 </head>
 
 <body>
+    <div class="spinner"></div>
+    <h2>جاري تجهيز الطباعة... يرجى الانتظار</h2>
 
-    <!-- Header -->
-    <div class="header">
-        <div class="info">
-            <p>الدكتور: {{ $submission->doctor->name }}</p>
-            <p>المحاسب: {{ $submission->accountant->name }}</p>
-            <p>التاريخ: {{ date('Y-m-d') }}</p>
-        </div>
-        <img src="{{ Storage::url($logo) }}" alt="Logo" class="logo">
-    </div>
+    <script>
+        const submissionId = {{ $submission->id }};
 
-    <!-- Table -->
-    <table>
-        <thead>
-            <tr>
-                <th>#</th>
-                <th>كود المريض</th>
-                <th>الاسم</th>
-                <th>تاريخ الحجز</th>
-                <th>نوع الزيارة</th>
-                <th>المبلغ</th>
-                <th>ملاحظات</th>
-            </tr>
-        </thead>
-        <tbody>
-            @foreach ($submission->appointments as $index => $appointment)
-                <tr>
-                    <td>{{ $index + 1 }}</td>
-                    <td>{{ $appointment->patient?->code }}</td>
-                    <td>{{ $appointment->patient?->name }}</td>
-                    <td>{{ $appointment->created_at->format('Y-m-d H:i A') }}</td>
-                    <td>{{ $appointment->visitType->service_type }}</td>
-                    <td>{{ ($appointment->visitType->doctor_fee_type == 'fixed' ? $appointment->visitType->doctor_fee_value : ($appointment->visitType->doctor_fee_value * $appointment->visitType->price) / 100) . ' ' . __('keywords.currency') }}
-                    </td>
-                    <td>{{ $appointment->notes }}</td>
-                </tr>
-            @endforeach
-        </tbody>
-    </table>
+        async function printSilently() {
+            try {
+                if (!qz.websocket.isActive()) {
+                    await qz.websocket.connect();
+                }
+
+                const printerName = "Microsoft Print to PDF";
+                const config = qz.configs.create(printerName);
+
+                const response = await fetch(`/print/appointment-submission-content/${submissionId}`);
+                const htmlContent = await response.text();
+
+                const data = [{
+                    type: 'html',
+                    format: 'plain',
+                    data: htmlContent
+                }];
+
+                await qz.print(config, data);
+                await qz.websocket.disconnect();
+
+                window.location.href = '/admin/appointments';
+
+            } catch (err) {
+                alert("حدث خطأ أثناء الطباعة");
+                console.error(err);
+                window.location.href = '/admin/appointments';
+
+            }
+        }
+
+        printSilently();
+    </script>
 
 </body>
 

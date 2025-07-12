@@ -298,6 +298,12 @@ class AppointmentResource extends Resource
                         )->pluck('name', 'id');
                     }),
 
+                Filter::make('is_submitted')
+                    ->query(function (Builder $query) {
+                        $query->whereDoesntHave('submissions');
+                    })
+                    ->label(__('keywords.not_submitted')),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
@@ -314,7 +320,7 @@ class AppointmentResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            // NOTE: validation to check if all selected appointments have the same doctor
+                            // NOTE: validation to check if all selected appointments have the same doctor or already submitted
 
                             $doctorIds = $records->map(function ($record) {
                                 return optional($record->visitType)->doctor_id;
@@ -328,6 +334,21 @@ class AppointmentResource extends Resource
                                     ->send();
                                 return;
                             }
+
+                            $submittedAppointments = $records->filter(function ($record) {
+                                return $record->submissions()->exists();
+                            });
+
+                            if ($submittedAppointments->isNotEmpty()) {
+                                Notification::make()
+                                    ->title('خطأ')
+                                    ->body('يجب اختيار زيارات لم يتم تسليمها.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+
+
                             $submission = AppointmentSubmission::create([
                                 'doctor_id' => Auth::user()->id,
                                 'accountant_id' => Auth::user()->id,
@@ -336,6 +357,8 @@ class AppointmentResource extends Resource
                             $records->each(function (Appointment $record) use ($submission) {
                                 $submission->appointments()->attach($record);
                             });
+
+                            return redirect()->route('print.appointment-submission', $submission);
                         })->visible(function() {
                             return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');
                         })

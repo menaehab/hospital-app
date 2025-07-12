@@ -32,17 +32,6 @@ class CreateAppointment extends CreateRecord
 
         unset($data['name'], $data['age'], $data['phone'], $data['address']);
 
-
-        // status
-        if (isset($data['status']) && $data['status'] === 'in_session') {
-            $data['start_time'] = now();
-        }
-
-        if (isset($data['status']) && $data['status'] === 'finished') {
-            $data['start_time'] = now();
-            $data['end_time'] = now();
-        }
-
         return $data;
     }
 
