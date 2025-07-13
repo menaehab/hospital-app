@@ -85,4 +85,5 @@ return [
     'already_printed' => 'تم الطباعة بالفعل',
     'food' => 'الغذاء',
     'foods' => 'الغذاء',
+    'common' => ' شائع',
 ];

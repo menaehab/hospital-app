@@ -8,6 +8,8 @@ use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Filament\Tables\Filters\Filter;
+use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
@@ -61,18 +63,42 @@ class FoodResource extends Resource
         return $table
             ->columns([
                 TextColumn::make('name')
+                    ->label(__('keywords.name'))
                     ->searchable()
                     ->sortable(),
+
+                IconColumn::make('common')
+                    ->label(__('keywords.common'))
+                    ->boolean()
+                    ->sortable()
+                    ->getStateUsing(fn ($record): bool => $record->commonFoods()->where('user_id', auth()->user()->id)->exists()),
             ])
             ->filters([
-                //
+                Filter::make('common')
+                    ->toggle()
+                    ->query(fn (Builder $query): Builder => $query->whereHas('commonFoods',
+                    fn (Builder $query): Builder => $query->where('user_id', auth()->user()->id))),
             ])
             ->actions([
+                Tables\Actions\Action::make('common')
+                    ->label(__('keywords.common'))
+                    ->color('info')
+                    ->icon('fas-star')
+                    ->action(function (Food $record) {
+                        $record->commonFoods()->toggle(auth()->user()->id);
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
+                    Tables\Actions\Action::make('common')
+                        ->label(__('keywords.common'))
+                        ->color('info')
+                        ->icon('fas-star')
+                        ->action(function (Food $record) {
+                            $record->commonFoods()->toggle(auth()->user()->id);
+                        }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
