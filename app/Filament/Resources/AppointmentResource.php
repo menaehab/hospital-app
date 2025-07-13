@@ -14,6 +14,7 @@ use App\Models\Appointment;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Illuminate\Support\Facades\Auth;
+use App\Models\AppointmentSubmission;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
@@ -23,12 +24,13 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
+use Filament\Resources\Pages\BeforeCreate;
+use Filament\Notifications\Notification;
 use Illuminate\Database\Eloquent\Collection;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use App\Filament\Resources\AppointmentResource\Pages;
 use App\Filament\Resources\AppointmentResource\RelationManagers;
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentsStatsOverview;
-use Filament\Resources\Pages\BeforeCreate;
 
 class AppointmentResource extends Resource
 {
@@ -51,12 +53,11 @@ class AppointmentResource extends Resource
     {
         return __('keywords.appointments');
     }
-
-    public static string|array $routeMiddleware = ['canAny:appointment_view,add_appointments,manage_appointments'];
+    public static string|array $routeMiddleware = ['canAny:view_appointments,add_appointments,manage_appointments'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return Auth::user()?->can('appointment_view') || Auth::user()?->can('add_appointments') || Auth::user()?->can('manage_appointments');
+        return Auth::user()?->can('view_appointments') || Auth::user()?->can('add_appointments') || Auth::user()?->can('manage_appointments');
     }
 
     public static function canCreate(): bool
@@ -73,6 +74,13 @@ class AppointmentResource extends Resource
     {
         return auth()->user()?->can('manage_appointments');
     }
+
+    // protected function getListeners(): array
+    // {
+    //     return [
+    //         'echo:appointment-updated,AppointmentUpdated' => '$refresh',
+    //     ];
+    // }
 
     public static function form(Form $form): Form
     {
@@ -123,7 +131,7 @@ class AppointmentResource extends Resource
                             ->live()
                             ->visible(fn ($get) => empty($get('patient_id')))
                             ->label(__('keywords.address')),
-                    ]),
+                    ])->visibleOn('create'),
 
                 Section::make(__('keywords.appointment_info'))
                     ->schema([
@@ -131,11 +139,16 @@ class AppointmentResource extends Resource
                             ->options(function () {
                                 $options = [
                                     'pending' => __('keywords.pending'),
+                                    'in_session' => __('keywords.in_session'),
                                     'missed' => __('keywords.missed'),
                                 ];
 
                                 if (auth()->user()->can('manage_appointments')) {
                                     $options['cancelled'] = __('keywords.cancelled');
+                                    $options['finished'] = __('keywords.finished');
+                                }
+
+                                if (auth()->user()->can('view_appointments')) {
                                     $options['finished'] = __('keywords.finished');
                                 }
                                 return $options;
@@ -199,6 +212,7 @@ class AppointmentResource extends Resource
             ]);
     }
 
+
     public static function table(Table $table): Table
     {
         return $table
@@ -217,14 +231,16 @@ class AppointmentResource extends Resource
                         return match ($state) {
                             'pending' => 'info',
                             'finished' => 'success',
+                            'in_session' => 'warning',
                             'cancelled' => 'danger',
-                            'missed' => 'warning',
+                            'missed' => 'gray',
                         };
                     })
                     ->formatStateUsing(function ($state) {
                         return match ($state) {
                             'pending' => __('keywords.pending'),
                             'finished' => __('keywords.finished'),
+                            'in_session' => __('keywords.in_session'),
                             'cancelled' => __('keywords.cancelled'),
                             'missed' => __('keywords.missed'),
                             default => ucfirst($state),
@@ -254,11 +270,15 @@ class AppointmentResource extends Resource
                     ->searchable()
                     ->sortable()
                     ->label(__('keywords.rescptionist')),
-                IconColumn::make('submited')
+                IconColumn::make('is_submitted')
+                    ->boolean()
                     ->searchable()
                     ->sortable()
+                    ->state(function ($record) {
+                        return $record->submissions()->exists();
+                    })
                     ->visible(function() {
-                        return auth()->user()->can('appointment_view') || auth()->user()->can('manage_appointments');
+                        return auth()->user()->can('view_appointments') || auth()->user()->can('manage_appointments');
                     })
                     ->label(__('keywords.submited')),
             ])
@@ -285,25 +305,68 @@ class AppointmentResource extends Resource
                         )->pluck('name', 'id');
                     }),
 
+                Filter::make('is_submitted')
+                    ->query(function (Builder $query) {
+                        $query->whereDoesntHave('submissions');
+                    })
+                    ->label(__('keywords.not_submitted')),
+
             ])
             ->actions([
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->visible(function() {
                         return auth()->user()->can('manage_appointments');
                     }),
-                    Tables\Actions\BulkAction::make('submited')
+                    Tables\Actions\BulkAction::make('is_submitted')
                         ->label( __('keywords.submit'))
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
+                        ->requiresConfirmation()
                         ->action(function (Collection $records) {
-                            $records->each(function (Appointment $record) {
-                                $record->submited = true;
-                                $record->save();
+                            // NOTE: validation to check if all selected appointments have the same doctor or already submitted
+
+                            $doctorIds = $records->map(function ($record) {
+                                return optional($record->visitType)->doctor_id;
+                            })->filter()->unique();
+
+                            if ($doctorIds->count() > 1) {
+                                Notification::make()
+                                    ->title('خطأ')
+                                    ->body('يجب اختيار زيارات لنفس الدكتور فقط.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+
+                            $submittedAppointments = $records->filter(function ($record) {
+                                return $record->submissions()->exists();
                             });
+
+                            if ($submittedAppointments->isNotEmpty()) {
+                                Notification::make()
+                                    ->title('خطأ')
+                                    ->body('يجب اختيار زيارات لم يتم تسليمها.')
+                                    ->danger()
+                                    ->send();
+                                return;
+                            }
+
+
+                            $submission = AppointmentSubmission::create([
+                                'doctor_id' => Auth::user()->id,
+                                'accountant_id' => Auth::user()->id,
+                            ]);
+
+                            $records->each(function (Appointment $record) use ($submission) {
+                                $submission->appointments()->attach($record);
+                            });
+
+                            return redirect()->route('print.appointment-submission', $submission);
                         })->visible(function() {
                             return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');
                         })

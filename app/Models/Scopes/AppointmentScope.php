@@ -13,13 +13,14 @@ class AppointmentScope implements Scope
      */
     public function apply(Builder $builder, Model $model): void
     {
-        if(auth()->user()->can('add_appointments')){
-            $builder->where('submited',false);
-        } else if (auth()->user()->can('appointment_view')){
+        if(auth()->user()->can('manage_appointments')){
+            return;
+        } else if(auth()->user()->can('add_appointments')){
+            $builder->whereDoesntHave('submissions');
+        } else if (auth()->user()->can('view_appointments')){
             $builder->whereHas('visitType.doctor', function ($query) {
                 return $query->where('doctor_id', auth()->user()->id);
             });
         }
-
     }
 }

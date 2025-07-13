@@ -16,8 +16,6 @@ use Filament\Tables\Filters\SelectFilter;
 use Illuminate\Database\Eloquent\Builder;
 use App\Filament\Resources\VisitTypeResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\VisitTypeResource\RelationManagers;
-use App\Filament\Resources\VisitTypeResource\RelationManagers\UserRelationManager;
 
 class VisitTypeResource extends Resource
 {
@@ -154,7 +152,7 @@ class VisitTypeResource extends Resource
     public static function getRelations(): array
     {
         return [
-            UserRelationManager::class,
+            //
         ];
     }
 

@@ -81,4 +81,8 @@ class Appointment extends Model
         return $this->belongsTo(Patient::class);
     }
 
+    public function submissions()
+    {
+        return $this->belongsToMany(AppointmentSubmission::class, 'submitted_appointments');
+    }
 }

@@ -1,8 +1,8 @@
 <?php
 
 return [
-    'role' => 'دور',
-    'roles' => 'الأدوار',
+    'role' => 'وظيفة',
+    'roles' => 'الوظائف',
     'name' => 'الأسم',
     'email' => 'البريد الألكتروني',
     'password' => 'كلمة المرور',
@@ -60,4 +60,27 @@ return [
     'search_by_code_or_name' => 'ابحث بالكود أو الاسم',
     'choose_patient_or_fill_patient_info' => 'يجب اختيار مريض أو إدخال بيانات مريض جديد.',
     'currency' => 'ج.م',
+    'you_must_select_appointments_for_the_same_doctor_only' => 'يجب اختيار المواعيد لدكتور واحد فقط',
+    'appointment_submission' => 'تسليم المواعيد',
+    'in_session' => 'في الجلسة',
+    'not_submitted' => 'غير مسلمة',
+    'not_found' => 'غير موجود',
+    'printed_by' => 'تم طباعة هذا التقرير بواسطة',
+    'total' => 'إجمالي',
+    'patient_code' => 'كود المريض',
+    'patient_name' => 'اسم المريض',
+    'appointment_number' => 'رقم الموعد',
+    'appointment_date' => 'تاريخ الموعد',
+    'session_duration' => 'مدة الجلسة',
+    'amount' => 'المبلغ',
+    'accountant' => 'المحاسب',
+    'the_doctor' => 'الدكتور',
+    'date' => 'التاريخ',
+    'appointment_submissions' => 'تسليم المواعيد',
+    'submitted_at' => 'تم التسليم في',
+    'print' => 'طباعة',
+    'Reports_and_finances' => 'التقارير و الماليات',
+    'from' => 'من',
+    'until' => 'إلى',
+    'already_printed' => 'تم الطباعة بالفعل'
 ];

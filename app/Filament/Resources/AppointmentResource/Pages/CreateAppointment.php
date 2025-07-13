@@ -13,6 +13,7 @@ class CreateAppointment extends CreateRecord
 
     public function mutateFormDataBeforeCreate(array $data): array
     {
+        // creating or getting patient
         if (empty($data['patient_id'])) {
             if (empty($data['name'])) {
                 throw new \Exception(__('keywords.choose_patient_or_fill_patient_info'));
@@ -33,4 +34,10 @@ class CreateAppointment extends CreateRecord
 
         return $data;
     }
+
+    protected function getRedirectUrl(): string
+    {
+        return $this->getResource()::getUrl('index');
+    }
+
 }

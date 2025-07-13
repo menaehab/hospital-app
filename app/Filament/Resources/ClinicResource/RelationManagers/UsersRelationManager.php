@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Filament\Resources\ClienicResource\RelationManagers;
+namespace App\Filament\Resources\ClinicResource\RelationManagers;
 
 use Filament\Forms;
 use Filament\Tables;

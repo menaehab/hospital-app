@@ -6,6 +6,7 @@ use Filament\Actions;
 use Filament\Resources\Pages\ListRecords;
 use App\Filament\Resources\AppointmentResource;
 use Filament\Pages\Concerns\ExposesTableToWidgets;
+
 use App\Filament\Resources\AppointmentResource\Widgets\AppointmentsStatsOverview;
 
 class ListAppointments extends ListRecords
@@ -27,4 +28,12 @@ class ListAppointments extends ListRecords
             Actions\CreateAction::make(),
         ];
     }
+
+    protected function getListeners(): array
+    {
+        return [
+            'echo-private:appointments,AppointmentUpdated' => '$refresh',
+        ];
+    }
+
 }

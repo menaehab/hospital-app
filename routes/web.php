@@ -1,10 +1,15 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Livewire\Volt\Volt;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\PrintController;
 
 Route::redirect('/', 'admin')->name('home');
 
+Route::middleware(['auth'])->group(function () {
+    Route::get('/print/appointment-submission/{submission}', [PrintController::class, 'AppointmentSubmissionShow'])->name('print.appointment-submission');
+    Route::get('/print/appointment-submission-content/{submission}', [PrintController::class, 'AppointmentSubmissionPrint'])->name('print.appointment-submission-content');
+});
 
 require __DIR__.'/auth.php';
 
