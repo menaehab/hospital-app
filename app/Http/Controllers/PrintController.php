@@ -9,7 +9,7 @@ class PrintController extends Controller
     public function AppointmentSubmissionShow(AppointmentSubmission $submission)
     {
         if($submission->is_printed && !auth()->user()->can('view_reports')){
-            abort(403, 'تم الطباعة بالفعل');
+            abort(403, __('keywords.already_printed'));
         }
 
         return view('prints.appointment-submission', compact('submission'));
@@ -20,7 +20,7 @@ class PrintController extends Controller
         $submission = AppointmentSubmission::findOrFail($id);
 
         if($submission->is_printed  && !auth()->user()->can('view_reports')){
-            abort(403, 'تم الطباعة بالفعل');
+            abort(403, __('keywords.already_printed'));
         }
 
         $logo = $submission->doctor->clinic->image;

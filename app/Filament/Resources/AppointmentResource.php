@@ -75,6 +75,13 @@ class AppointmentResource extends Resource
         return auth()->user()?->can('manage_appointments');
     }
 
+    // protected function getListeners(): array
+    // {
+    //     return [
+    //         'echo:appointment-updated,AppointmentUpdated' => '$refresh',
+    //     ];
+    // }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -309,6 +316,7 @@ class AppointmentResource extends Resource
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
             ])
+
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\DeleteBulkAction::make()->visible(function() {

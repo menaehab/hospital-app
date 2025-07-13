@@ -82,4 +82,5 @@ return [
     'Reports_and_finances' => 'التقارير و الماليات',
     'from' => 'من',
     'until' => 'إلى',
+    'already_printed' => 'تم الطباعة بالفعل'
 ];
