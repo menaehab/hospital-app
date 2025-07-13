@@ -56,6 +56,13 @@
                         {{ __('keywords.patients') }}
                     </x-filament::button>
                 @endif
+
+                @if (auth()->user()->can('view_reports'))
+                    <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
+                        tag="a" href="{{ route('filament.admin.resources.appointment-submissions.index') }}">
+                        {{ __('keywords.appointment_submissions') }}
+                    </x-filament::button>
+                @endif
             </div>
 
             <!-- LIVE TIME -->

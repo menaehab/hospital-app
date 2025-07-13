@@ -76,4 +76,10 @@ return [
     'accountant' => 'المحاسب',
     'the_doctor' => 'الدكتور',
     'date' => 'التاريخ',
+    'appointment_submissions' => 'تسليم المواعيد',
+    'submitted_at' => 'تم التسليم في',
+    'print' => 'طباعة',
+    'Reports_and_finances' => 'التقارير و الماليات',
+    'from' => 'من',
+    'until' => 'إلى',
 ];
