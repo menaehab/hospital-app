@@ -85,4 +85,9 @@ class Appointment extends Model
     {
         return $this->belongsToMany(AppointmentSubmission::class, 'submitted_appointments');
     }
+
+    public function vitalSigns()
+    {
+        return $this->hasOne(VitalSign::class);
+    }
 }

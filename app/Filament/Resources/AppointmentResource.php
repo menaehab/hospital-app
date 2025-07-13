@@ -53,7 +53,7 @@ class AppointmentResource extends Resource
     {
         return __('keywords.appointments');
     }
-    public static string|array $routeMiddleware = ['canAny:view_appointments,add_appointments,manage_appointments'];
+    public static string|array $routeMiddleware = ['canAny:view_appointments,add_appointments,manage_appointments,show_reports'];
 
     public static function shouldRegisterNavigation(): bool
     {
@@ -74,13 +74,6 @@ class AppointmentResource extends Resource
     {
         return auth()->user()?->can('manage_appointments');
     }
-
-    // protected function getListeners(): array
-    // {
-    //     return [
-    //         'echo:appointment-updated,AppointmentUpdated' => '$refresh',
-    //     ];
-    // }
 
     public static function form(Form $form): Form
     {
@@ -327,6 +320,9 @@ class AppointmentResource extends Resource
                         ->icon('heroicon-o-check-circle')
                         ->color('success')
                         ->requiresConfirmation()
+                        ->visible(function() {
+                            return auth()->user()->can('manage_appointments') || auth()->user()->can('show_reports');
+                        })
                         ->action(function (Collection $records) {
                             // NOTE: validation to check if all selected appointments have the same doctor or already submitted
 
