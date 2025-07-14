@@ -72,5 +72,28 @@ class User extends Authenticatable
         return $this->hasMany(Appointment::class);
     }
 
+    public function commonMedicalTests()
+    {
+        return $this->belongsToMany(MedicalTest::class, 'medical_test_user', 'user_id', 'medical_test_id')
+            ->withTimestamps();
+    }
+
+    public function commonRadiologyTests()
+    {
+        return $this->belongsToMany(RadiologyTest::class, 'radiology_test_user', 'user_id', 'radiology_test_id')
+            ->withTimestamps();
+    }
+
+    public function commonFoods()
+    {
+        return $this->belongsToMany(Food::class, 'food_user', 'user_id', 'food_id')
+            ->withTimestamps();
+    }
+
+    public function commonMedicines()
+    {
+        return $this->belongsToMany(Medicine::class, 'medicine_user', 'user_id', 'medicine_id')
+            ->withTimestamps();
+    }
 
 }

@@ -18,6 +18,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'add_appointments', 'display_name' => 'إضافة زيارات'], // add appointments (used by receptionist)
             ['name' => 'view_appointments', 'display_name' => 'عرض زيارته فقط'], // show appointments that created by himself (used by doctor)
             ['name' => 'manage_appointments', 'display_name' => 'إدارة المواعيد'], // manage appointments (used by admin)
+            ['name' => 'submit_appointments', 'display_name' => 'تسليم المواعيد'], // submit appointments (used by admin)
             ['name' => 'manage_visit_types', 'display_name' => 'إدارة أنواع الزيارات'], // manage visit types (used by admin)
             ['name' => 'view_reports', 'display_name' => 'عرض التقارير'], // show reports (used by admin)
             ['name' => 'has_specialties', 'display_name' => 'لديه تخصص'], // show doctors that has specialties (used by doctor)
@@ -30,6 +31,7 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_food', 'display_name' => 'إدارة الغذاء'], // manage food (used by admin)
             ['name' => 'manage_medicines', 'display_name' => 'إدارة الدواء'], // manage medicines (used by admin)
             ['name' => 'manage_medical_tests', 'display_name' => 'إدارة التحاليل'], // manage medical tests (used by admin)
+            ['name' => 'manage_radiology_tests', 'display_name' => 'إدارة التحاليل'], // manage medical tests (used by admin)
         ];
 
         foreach ($permissions as $permission) {
