@@ -95,4 +95,7 @@ return [
     'row' => 'الصف',
     'medicine' => 'دواء',
     'medicines' => 'الادوية',
+    'import_medicine' => 'استيراد الادوية',
+    'medicine_imported_successfully' => 'تم استيراد الادوية بنجاح',
+    'import_medicine_description' => 'استيراد الادوية من ملف Excel يحتوي على الأسماء فقط.',
 ];

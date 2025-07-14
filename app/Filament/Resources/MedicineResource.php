@@ -64,7 +64,9 @@ class MedicineResource extends Resource
         return $table
             ->columns([
                 Tables\Columns\TextColumn::make('name')
-                    ->searchable(),
+                    ->searchable()
+                    ->sortable()
+                    ->label(__('keywords.name')),
                 IconColumn::make('common')
                     ->label(__('keywords.common'))
                     ->boolean()
@@ -79,6 +81,13 @@ class MedicineResource extends Resource
                     fn (Builder $query): Builder => $query->where('user_id', auth()->user()->id))),
             ])
             ->actions([
+                Tables\Actions\Action::make('common')
+                    ->label(__('keywords.common'))
+                    ->color('info')
+                    ->icon('fas-star')
+                    ->action(function (Medicine $record) {
+                        $record->commonMedicines()->toggle(auth()->user()->id);
+                    }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make()
             ])
