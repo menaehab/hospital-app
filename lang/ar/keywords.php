@@ -93,4 +93,6 @@ return [
     'food_imported_successfully' => 'تم استيراد الطعام بنجاح',
     'import_validation_error' => 'خطأ في استيراد البيانات',
     'row' => 'الصف',
+    'medicine' => 'دواء',
+    'medicines' => 'الادوية',
 ];
