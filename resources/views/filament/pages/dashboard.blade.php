@@ -70,6 +70,13 @@
                         {{ __('keywords.food') }}
                     </x-filament::button>
                 @endif
+
+                @if (auth()->user()->can('manage_medicines'))
+                    <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
+                        tag="a" href="{{ route('filament.admin.resources.medicines.index') }}">
+                        {{ __('keywords.medicines') }}
+                    </x-filament::button>
+                @endif
             </div>
 
             <!-- LIVE TIME -->

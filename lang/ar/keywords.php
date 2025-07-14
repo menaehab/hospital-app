@@ -93,4 +93,9 @@ return [
     'food_imported_successfully' => 'تم استيراد الطعام بنجاح',
     'import_validation_error' => 'خطأ في استيراد البيانات',
     'row' => 'الصف',
+    'medicine' => 'دواء',
+    'medicines' => 'الادوية',
+    'import_medicine' => 'استيراد الادوية',
+    'medicine_imported_successfully' => 'تم استيراد الادوية بنجاح',
+    'import_medicine_description' => 'استيراد الادوية من ملف Excel يحتوي على الأسماء فقط.',
 ];
