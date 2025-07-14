@@ -54,6 +54,7 @@ class FoodResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255)
+                    ->unique()
                     ->label(__('keywords.name')),
             ])->columns(1);
     }
@@ -76,6 +77,7 @@ class FoodResource extends Resource
             ->filters([
                 Filter::make('common')
                     ->toggle()
+                    ->label(__('keywords.common'))
                     ->query(fn (Builder $query): Builder => $query->whereHas('commonFoods',
                     fn (Builder $query): Builder => $query->where('user_id', auth()->user()->id))),
             ])
