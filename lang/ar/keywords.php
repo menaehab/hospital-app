@@ -98,4 +98,9 @@ return [
     'import_medicine' => 'استيراد الادوية',
     'medicine_imported_successfully' => 'تم استيراد الادوية بنجاح',
     'import_medicine_description' => 'استيراد الادوية من ملف Excel يحتوي على الأسماء فقط.',
+    'medical_test' => 'تحليل',
+    'medical_tests' => 'التحاليل',
+    'import_medical_test' => 'استيراد التحاليل',
+    'medical_test_imported_successfully' => 'تم استيراد التحاليل بنجاح',
+    'import_medical_test_description' => 'استيراد التحاليل من ملف Excel يحتوي على الأسماء فقط.',
 ];
