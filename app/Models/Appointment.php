@@ -90,4 +90,9 @@ class Appointment extends Model
     {
         return $this->hasOne(VitalSign::class);
     }
+
+    public function prescription()
+    {
+        return $this->hasOne(Prescription::class);
+    }
 }
