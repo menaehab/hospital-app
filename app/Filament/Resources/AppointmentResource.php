@@ -271,7 +271,7 @@ class AppointmentResource extends Resource
                         return $record->submissions()->exists();
                     })
                     ->visible(function() {
-                        return auth()->user()->can('view_appointments') || auth()->user()->can('manage_appointments');
+                        return auth()->user()->can('view_appointments') || auth()->user()->can('manage_appointments') || auth()->user()->can('submit_appointments');
                     })
                     ->label(__('keywords.submited')),
             ])
@@ -321,7 +321,7 @@ class AppointmentResource extends Resource
                         ->color('success')
                         ->requiresConfirmation()
                         ->visible(function() {
-                            return auth()->user()->can('manage_appointments') || auth()->user()->can('show_reports');
+                            return auth()->user()->can('manage_appointments') || auth()->user()->can('show_reports') || auth()->user()->can('submit_appointments');
                         })
                         ->action(function (Collection $records) {
                             // NOTE: validation to check if all selected appointments have the same doctor or already submitted
