@@ -38,6 +38,8 @@ class PatientResource extends Resource
     {
         return __('keywords.patients');
     }
+    protected static ?int $navigationSort = 1;
+
     public static string|array $routeMiddleware = ['canAny:manage_patients,view_patients'];
 
     public static function shouldRegisterNavigation(): bool

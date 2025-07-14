@@ -27,11 +27,13 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_clinics', 'display_name' => 'إدارة العيادات'], // manage clienics (used by admin)
             ['name' => 'manage_patients', 'display_name' => 'إدارة المرضى'], // manage patients (used by admin)
             ['name' => 'view_patients', 'display_name' => 'عرض المرضى'], // view patients (used by doctor)
+            ['name' => 'manage_food', 'display_name' => 'إدارة الغذاء'], // manage food (used by admin)
         ];
 
         foreach ($permissions as $permission) {
             Permission::updateOrCreate([
                 'name' => $permission['name'],
+            ],[
                 'display_name' => $permission['display_name'],
             ]);
         }

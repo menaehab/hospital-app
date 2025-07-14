@@ -82,5 +82,15 @@ return [
     'Reports_and_finances' => 'التقارير و الماليات',
     'from' => 'من',
     'until' => 'إلى',
-    'already_printed' => 'تم الطباعة بالفعل'
+    'already_printed' => 'تم الطباعة بالفعل',
+    'food' => 'الطعام',
+    'foods' => 'الطعام',
+    'common' => ' شائع',
+    'import_food' => 'استيراد طعام',
+    'import_food_description' => 'استيراد طعام من ملف Excel يحتوي على الأسماء فقط.',
+    'file' => 'الملف',
+    'success' => 'تم بنجاح',
+    'food_imported_successfully' => 'تم استيراد الطعام بنجاح',
+    'import_validation_error' => 'خطأ في استيراد البيانات',
+    'row' => 'الصف',
 ];
