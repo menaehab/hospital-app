@@ -36,6 +36,14 @@
                     </x-filament::button>
                 @endif
 
+                @if (auth()->user()->can('manage_radiology_tests'))
+                    <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
+                        tag="a" href="{{ route('filament.admin.resources.radiology-tests.index') }}">
+                        {{ __('keywords.radiology_tests') }}
+                    </x-filament::button>
+                @endif
+
+
                 @if (auth()->user()->can('manage_food'))
                     <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
                         tag="a" href="{{ route('filament.admin.resources.food.index') }}">

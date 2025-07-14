@@ -102,5 +102,10 @@ return [
     'medical_tests' => 'التحاليل',
     'import_medical_test' => 'استيراد التحاليل',
     'medical_test_imported_successfully' => 'تم استيراد التحاليل بنجاح',
-    'import_medical_test_description' => 'استيراد التحاليل من ملف Excel يحتوي على الأسماء فقط.',
+    'import_medical_test_description' => 'استيراد التحاليل من ملف Excel يحتوي على الأسماء و الاكواد فقط.',
+    'radiology_test' => 'اشعة',
+    'radiology_tests' => 'الاشاعات',
+    'import_radiology_test' => 'استيراد الاشاعات',
+    'radiology_test_imported_successfully' => 'تم استيراد الاشاعات بنجاح',
+    'import_radiology_test_description' => 'استيراد الاشاعات من ملف Excel يحتوي على الأسماء و الاكواد فقط.',
 ];
