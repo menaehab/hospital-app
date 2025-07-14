@@ -3,10 +3,10 @@
 namespace App\Filament\Resources;
 
 use Filament\Forms;
-use App\Models\Food;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use App\Models\MedicalTest;
 use Filament\Resources\Resource;
 use Filament\Tables\Filters\Filter;
 use Filament\Tables\Columns\IconColumn;
@@ -14,15 +14,15 @@ use Filament\Tables\Columns\TextColumn;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Collection;
-use App\Filament\Resources\FoodResource\Pages;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
-use App\Filament\Resources\FoodResource\RelationManagers;
+use App\Filament\Resources\MedicalTestResource\Pages;
+use App\Filament\Resources\MedicalTestResource\RelationManagers;
 
-class FoodResource extends Resource
+class MedicalTestResource extends Resource
 {
-    protected static ?string $model = Food::class;
+    protected static ?string $model = MedicalTest::class;
 
-    protected static ?string $navigationIcon = 'fas-utensils';
+    protected static ?string $navigationIcon = 'fas-microscope';
 
     public static function getNavigationGroup(): string
     {
@@ -31,22 +31,23 @@ class FoodResource extends Resource
 
     public static function getLabel(): string
     {
-        return __('keywords.food');
+        return __('keywords.medical_test');
     }
 
     public static function getPluralLabel(): string
     {
-        return __('keywords.foods');
+        return __('keywords.medical_tests');
     }
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 3;
 
-    protected static string|array $routeMiddleware = ['canAny:manage_food'];
+    protected static string|array $routeMiddleware = ['canAny:manage_medical_tests'];
 
     public static function shouldRegisterNavigation(): bool
     {
-        return auth()->user()?->can('manage_food');
+        return auth()->user()?->can('manage_medical_tests');
     }
+
 
     public static function form(Form $form): Form
     {
@@ -57,7 +58,11 @@ class FoodResource extends Resource
                     ->maxLength(255)
                     ->unique()
                     ->label(__('keywords.name')),
-            ])->columns(1);
+                TextInput::make('code')
+                    ->maxLength(255)
+                    ->unique()
+                    ->label(__('keywords.code')),
+            ]);
     }
 
     public static function table(Table $table): Table
@@ -68,18 +73,21 @@ class FoodResource extends Resource
                     ->label(__('keywords.name'))
                     ->searchable()
                     ->sortable(),
-
+                TextColumn::make('code')
+                    ->label(__('keywords.code'))
+                    ->searchable()
+                    ->sortable(),
                 IconColumn::make('common')
                     ->label(__('keywords.common'))
                     ->boolean()
                     ->sortable()
-                    ->getStateUsing(fn ($record): bool => $record->commonFoods()->where('user_id', auth()->user()->id)->exists()),
+                    ->getStateUsing(fn ($record): bool => $record->commonMedicalTests()->where('user_id', auth()->user()->id)->exists()),
             ])
             ->filters([
                 Filter::make('common')
                     ->toggle()
                     ->label(__('keywords.common'))
-                    ->query(fn (Builder $query): Builder => $query->whereHas('commonFoods',
+                    ->query(fn (Builder $query): Builder => $query->whereHas('commonMedicalTests',
                     fn (Builder $query): Builder => $query->where('user_id', auth()->user()->id))),
             ])
             ->actions([
@@ -87,8 +95,8 @@ class FoodResource extends Resource
                     ->label(__('keywords.common'))
                     ->color('info')
                     ->icon('fas-star')
-                    ->action(function (Food $record) {
-                        $record->commonFoods()->toggle(auth()->user()->id);
+                    ->action(function (MedicalTest $record) {
+                        $record->commonMedicalTests()->toggle(auth()->user()->id);
                     }),
                 Tables\Actions\EditAction::make(),
                 Tables\Actions\DeleteAction::make(),
@@ -96,14 +104,14 @@ class FoodResource extends Resource
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
                     Tables\Actions\BulkAction::make('common')
-                        ->label(__('keywords.common'))
-                        ->color('info')
-                        ->icon('fas-star')
-                        ->action(function (Collection $records) {
-                            $records->each(function ($record) {
-                                $record->commonFoods()->toggle(auth()->user()->id);
-                            });
-                        }),
+                    ->label(__('keywords.common'))
+                    ->color('info')
+                    ->icon('fas-star')
+                    ->action(function (Collection $records) {
+                        $records->each(function ($record) {
+                            $record->commonMedicalTests()->toggle(auth()->user()->id);
+                        });
+                    }),
                     Tables\Actions\DeleteBulkAction::make(),
                 ]),
             ]);
@@ -119,9 +127,9 @@ class FoodResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListFood::route('/'),
-            'create' => Pages\CreateFood::route('/create'),
-            'edit' => Pages\EditFood::route('/{record}/edit'),
+            'index' => Pages\ListMedicalTests::route('/'),
+            'create' => Pages\CreateMedicalTest::route('/create'),
+            'edit' => Pages\EditMedicalTest::route('/{record}/edit'),
         ];
     }
 }
