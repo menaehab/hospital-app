@@ -18,7 +18,7 @@ return new class extends Migration
             $table->integer('blood_pressure_diastolic')->nullable();
             $table->decimal('temperature', 5, 2)->nullable();
             $table->decimal('oxygen_saturation', 5, 2)->nullable();
-            $table->foreignId('appointment_id')->constrained()->cascadeOnDelete();
+            $table->foreignId('appointment_id')->constrained('appointments')->cascadeOnDelete();
             $table->timestamps();
         });
     }

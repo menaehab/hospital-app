@@ -37,7 +37,7 @@ class MedicineResource extends Resource
         return __('keywords.medicines');
     }
 
-    protected static ?int $navigationSort = 2;
+    protected static ?int $navigationSort = 3;
 
     protected static string|array $routeMiddleware = ['canAny:manage_medicines'];
 
@@ -53,7 +53,8 @@ class MedicineResource extends Resource
                 Forms\Components\TextInput::make('name')
                     ->label(__('keywords.name'))
                     ->required()
-                    ->unique()
+                    ->unique(ignoreRecord: true)
+
                     ->maxLength(255),
             ])
             ->columns(1);

@@ -39,7 +39,7 @@ class RadiologyTestResource extends Resource
         return __('keywords.radiology_tests');
     }
 
-    protected static ?int $navigationSort = 4;
+    protected static ?int $navigationSort = 5;
 
     protected static string|array $routeMiddleware = ['canAny:manage_radiology_tests'];
 
@@ -55,11 +55,13 @@ class RadiologyTestResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->unique()
+                    ->unique(ignoreRecord: true)
+
                     ->label(__('keywords.name')),
                 TextInput::make('code')
                     ->maxLength(255)
-                    ->unique()
+                    ->unique(ignoreRecord: true)
+
                     ->label(__('keywords.code')),
             ]);
     }
