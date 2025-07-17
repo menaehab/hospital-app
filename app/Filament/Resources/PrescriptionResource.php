@@ -314,7 +314,7 @@ class PrescriptionResource extends Resource
                     ->schema([
                         Repeater::make('foods')
                         ->schema([
-                            Select::make('food')
+                            Select::make('food_id')
                             ->label(__('keywords.food'))
                             ->options(function () {
                                 $doctorId = auth()->id();

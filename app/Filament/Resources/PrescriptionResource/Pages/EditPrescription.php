@@ -17,7 +17,6 @@ class EditPrescription extends EditRecord
     {
         return [
             Actions\DeleteAction::make(),
-            Actions\ViewAction::make(),
         ];
     }
 
@@ -26,42 +25,78 @@ class EditPrescription extends EditRecord
         return $this->getResource()::getUrl('index');
     }
 
-    protected function beforeFill(): void
+    protected function fillForm(): void
     {
-        $prescription = $this->getRecord();
+        $this->callHook('beforeFill');
+
+        // Load the prescription with all necessary relationships
+        $prescription = $this->getRecord()->load([
+            'appointment.vitalSign',
+            'appointment.patient',
+            'medicines',
+            'medicalTests',
+            'radiologyTests',
+            'foods'
+        ]);
+
         $appointment = $prescription->appointment;
         $patient = $appointment->patient;
+        $vitalSign = $appointment->vitalSign;
 
-        $this->form->fill([
+        // Initialize vital signs with null values if not exists
+        $vitalSignData = [
+            'heart_rate' => null,
+            'temperature' => null,
+            'oxygen_saturation' => null,
+            'blood_pressure_systolic' => null,
+            'blood_pressure_diastolic' => null,
+        ];
+
+        // Merge with existing vital sign data if available
+        if ($vitalSign) {
+            $vitalSignData = array_merge($vitalSignData, $vitalSign->toArray());
+        }
+
+        // Get the default form data from the record
+        $data = $this->getRecord()->attributesToArray();
+        // Add related data
+        $data = array_merge($data, [
             'appointment_id' => $prescription->appointment_id,
             'patient_name' => $patient->name,
             'patient_age' => $patient->age,
+            'patient_phone' => $patient->phone,
+            'patient_code' => $patient->code,
+            'patient_address' => $patient->address,
             'patient_gender' => $patient->gender,
             'has_diabetes' => $patient->has_diabetes,
             'has_heart_disease' => $patient->has_heart_disease,
             'has_high_blood_pressure' => $patient->has_high_blood_pressure,
-            'heart_rate' => $appointment->heart_rate,
-            'temperature' => $appointment->temperature,
-            'oxygen_saturation' => $appointment->oxygen_saturation,
-            'blood_pressure' => $appointment->blood_pressure,
+            'heart_rate' => $vitalSignData['heart_rate'],
+            'temperature' => $vitalSignData['temperature'],
+            'oxygen_saturation' => $vitalSignData['oxygen_saturation'],
+            'blood_pressure_systolic' => $vitalSignData['blood_pressure_systolic'],
+            'blood_pressure_diastolic' => $vitalSignData['blood_pressure_diastolic'],
             'medicines' => $prescription->medicines->map(function ($medicine) {
                 return [
                     'medicine_id' => $medicine->id,
                     'timing_type' => $medicine->pivot->timing_type,
                     'time_per_day' => $medicine->pivot->time_per_day,
-                    'notes' => $medicine->pivot->notes,
                 ];
             })->toArray(),
             'medical_tests' => $prescription->medicalTests->pluck('id')->toArray(),
             'radiology_tests' => $prescription->radiologyTests->pluck('id')->toArray(),
             'foods' => $prescription->foods->map(function ($food) {
                 return [
-                    'food' => $food->id,
+                    'food_id' => $food->id,
                     'allow' => $food->pivot->allow,
                 ];
             })->toArray(),
             'notes' => $prescription->notes,
         ]);
+
+        $data = $this->mutateFormDataBeforeFill($data);
+        $this->form->fill($data);
+        $this->callHook('afterFill');
     }
 
     protected function afterSave(): void
@@ -81,29 +116,40 @@ class EditPrescription extends EditRecord
             $appointment->patient()->update($patientData);
         }
 
-        // Update vital signs
-        $appointmentData = [];
-        if (isset($data['heart_rate'])) $appointmentData['heart_rate'] = $data['heart_rate'];
-        if (isset($data['temperature'])) $appointmentData['temperature'] = $data['temperature'];
-        if (isset($data['oxygen_saturation'])) $appointmentData['oxygen_saturation'] = $data['oxygen_saturation'];
-        if (isset($data['blood_pressure'])) $appointmentData['blood_pressure'] = $data['blood_pressure'];
+        // Update or create vital signs
+        $vitalSignData = [
+            'appointment_id' => $appointment->id,
+            'heart_rate' => $data['heart_rate'] ?? null,
+            'temperature' => $data['temperature'] ?? null,
+            'oxygen_saturation' => $data['oxygen_saturation'] ?? null,
+            'blood_pressure_systolic' => $data['blood_pressure_systolic'] ?? null,
+            'blood_pressure_diastolic' => $data['blood_pressure_diastolic'] ?? null,
+        ];
 
-        if (!empty($appointmentData)) {
-            $appointment->update($appointmentData);
+        if ($appointment->vitalSign) {
+            $appointment->vitalSign()->update($vitalSignData);
+        } else {
+            $appointment->vitalSign()->create($vitalSignData);
         }
 
         // Sync medicines
         if (!empty($data['medicines'])) {
             $medicines = [];
             foreach ($data['medicines'] as $medicine) {
-                if ($medicine['timing_type'] == 'other' && !empty($medicine['timing_custom'])) {
+                if (!isset($medicine['medicine_id'])) continue;
+
+                $timingType = $medicine['timing_type'];
+                $timePerDay = $medicine['time_per_day'];
+
+                // Handle custom timing if needed
+                if ($timingType === 'other' && !empty($medicine['timing_custom'])) {
                     $timing = Timing::firstOrCreate(['label' => $medicine['timing_custom']]);
-                    $medicine['timing_type'] = $timing->label;
+                    $timingType = $timing->label;
                 }
+
                 $medicines[$medicine['medicine_id']] = [
-                    'timing_type' => $medicine['timing_type'],
-                    'time_per_day' => $medicine['time_per_day'],
-                    'notes' => $medicine['notes'] ?? null,
+                    'timing_type' => $timingType,
+                    'time_per_day' => (int) $timePerDay,
                 ];
             }
             $prescription->medicines()->sync($medicines);
@@ -128,7 +174,7 @@ class EditPrescription extends EditRecord
         // Sync foods
         if (!empty($data['foods'])) {
             $foods = collect($data['foods'])->mapWithKeys(function ($food) {
-                return [$food['food'] => ['allow' => $food['allow']]];
+                return [$food['food_id'] => ['allow' => $food['allow']]];
             });
             $prescription->foods()->sync($foods);
         } else {

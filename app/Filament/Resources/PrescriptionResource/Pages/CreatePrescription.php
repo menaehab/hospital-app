@@ -2,16 +2,17 @@
 
 namespace App\Filament\Resources\PrescriptionResource\Pages;
 
+use App\Models\Food;
 use Filament\Actions;
 use App\Models\Timing;
 use App\Models\Patient;
+use App\Models\VitalSign;
 use App\Models\Appointment;
 use App\Models\Prescription;
-use App\Models\Food;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Database\Eloquent\Model;
 use Filament\Resources\Pages\CreateRecord;
 use App\Filament\Resources\PrescriptionResource;
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\DB;
 
 class CreatePrescription extends CreateRecord
 {
@@ -80,10 +81,13 @@ class CreatePrescription extends CreateRecord
         if (isset($data['heart_rate'])) $appointmentData['heart_rate'] = $data['heart_rate'];
         if (isset($data['temperature'])) $appointmentData['temperature'] = $data['temperature'];
         if (isset($data['oxygen_saturation'])) $appointmentData['oxygen_saturation'] = $data['oxygen_saturation'];
-        if (isset($data['blood_pressure'])) $appointmentData['blood_pressure'] = $data['blood_pressure'];
-
+        if (isset($data['blood_pressure_diastolic']))
+            $appointmentData['blood_pressure'] = $data['blood_pressure_diastolic'];
+        if (isset($data['blood_pressure_systolic']))
+            $appointmentData['blood_pressure'] = $data['blood_pressure_systolic'];
         if (!empty($appointmentData)) {
-            $appointment->update($appointmentData);
+            $appointmentData['appointment_id'] = $appointment->id;
+            VitalSign::create($appointmentData);
         }
 
         // Attach medicines
@@ -115,7 +119,7 @@ class CreatePrescription extends CreateRecord
         // Attach foods
         if (!empty($data['foods'])) {
             $foods = collect($data['foods'])->mapWithKeys(function ($food) {
-                return [$food['food'] => ['allow' => $food['allow']]];
+                return [$food['food_id'] => ['allow' => $food['allow']]];
             });
             $prescription->foods()->sync($foods);
         }
