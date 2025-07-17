@@ -117,7 +117,7 @@ return [
     'blood_pressure_systolic' => 'ضغط الدم الانقباضي',
     'blood_pressure_diastolic' => 'ضغط الدم الانبساطي',
     'medicine_name' => 'اسم الدواء',
-    'times_per_day' => 'عدد المرات في اليوم',
+    'time_per_day' => 'عدد المرات في اليوم',
     'timing' => 'توقيت الدواء',
     'custom_timing' => 'توقيت مخصص',
     'custom_timing_placeholder' => 'اكتب التوقيت',

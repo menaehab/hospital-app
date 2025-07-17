@@ -21,6 +21,7 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Checkbox;
 use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
@@ -82,6 +83,7 @@ class PrescriptionResource extends Resource
                                 return Appointment::where('status', 'in_session')
                                     ->orWhere('status', 'missed')
                                     ->orWhere('status', 'pending')
+                                    ->whereDoesntHave('submissions')
                                     ->whereHas('visitType', function ($query) {
                                         return $query->where('doctor_id', Auth::user()->id);
                                     })->get()
@@ -195,7 +197,7 @@ class PrescriptionResource extends Resource
 
                     Section::make(__('keywords.medicines'))
                     ->schema([
-                        Repeater::make('prescription_items')
+                        Repeater::make('medicines')
                             ->label(__('keywords.medicines'))
                             ->schema([
                                 Select::make('medicine_id')
@@ -204,8 +206,8 @@ class PrescriptionResource extends Resource
                                     ->searchable()
                                     ->required(),
 
-                                TextInput::make('times_per_day')
-                                    ->label(__('keywords.times_per_day'))
+                                TextInput::make('time_per_day')
+                                    ->label(__('keywords.time_per_day'))
                                     ->numeric()
                                     ->required(),
 
@@ -235,7 +237,7 @@ class PrescriptionResource extends Resource
 
                     Section::make(__('keywords.medical_tests'))
                     ->schema([
-                        Select::make('medical_test')
+                        Select::make('medical_tests')
                             ->label(__('keywords.medical_test'))
                             ->options(function () {
                                 $doctorId = auth()->id();
@@ -272,7 +274,7 @@ class PrescriptionResource extends Resource
 
                     Section::make(__('keywords.radiology_tests'))
                     ->schema([
-                        Select::make('radiology_test')
+                        Select::make('radiology_tests')
                             ->label(__('keywords.radiology_test'))
                             ->options(function () {
                                 $doctorId = auth()->id();
@@ -310,7 +312,7 @@ class PrescriptionResource extends Resource
 
                     Section::make(__('keywords.foods'))
                     ->schema([
-                        Repeater::make(__('keywords.foods'))
+                        Repeater::make('foods')
                         ->schema([
                             Select::make('food')
                             ->label(__('keywords.food'))
@@ -355,21 +357,56 @@ class PrescriptionResource extends Resource
                         ->columns(2)
                         ->createItemButtonLabel(__('keywords.add_new_food')),
                     ])
-                    ->visible(fn ($get) => $get('appointment_id') != null)
+                    ->visible(fn ($get) => $get('appointment_id') != null),
+
+
+                Section::make(__('keywords.notes'))
+                ->schema([
+                    Textarea::make('notes')
+                        ->columnSpanFull()
+                        ->label(__('keywords.notes')),
+                ])
+                ->visible(fn ($get) => $get('appointment_id') != null),
             ]);
+    }
+
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        if (Auth::user()?->can('view_his_prescriptions_only') && !Auth::user()?->can('manage_prescriptions')) {
+            $query->whereHas('appointment.visitType', function ($q) {
+                $q->where('doctor_id', Auth::id());
+            });
+        }
+
+        return $query;
     }
 
     public static function table(Table $table): Table
     {
         return $table
             ->columns([
-                //
+                Tables\Columns\TextColumn::make('appointment.patient.name')
+                    ->label(__('keywords.patient'))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('appointment.number')
+                    ->label(__('keywords.appointment_number'))
+                    ->searchable()
+                    ->sortable(),
+                Tables\Columns\TextColumn::make('created_at')
+                    ->label(__('keywords.date'))
+                    ->time('Y-m-d h:i:s A')
+                    ->sortable(),
             ])
             ->filters([
                 //
             ])
             ->actions([
+                Tables\Actions\ViewAction::make(),
                 Tables\Actions\EditAction::make(),
+                Tables\Actions\DeleteAction::make(),
             ])
             ->bulkActions([
                 Tables\Actions\BulkActionGroup::make([
@@ -391,6 +428,7 @@ class PrescriptionResource extends Resource
             'index' => Pages\ListPrescriptions::route('/'),
             'create' => Pages\CreatePrescription::route('/create'),
             'edit' => Pages\EditPrescription::route('/{record}/edit'),
+            'view' => Pages\ViewPrescription::route('/{record}/show'),
         ];
     }
 }

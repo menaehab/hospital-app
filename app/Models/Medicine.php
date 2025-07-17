@@ -14,4 +14,10 @@ class Medicine extends Model
         return $this->belongsToMany(User::class, 'medicine_user', 'medicine_id', 'user_id')
             ->withTimestamps();
     }
+
+    public function prescriptions()
+    {
+        return $this->belongsToMany(Prescription::class, 'medicine_prescription', 'medicine_id', 'prescription_id')
+            ->withTimestamps();
+    }
 }

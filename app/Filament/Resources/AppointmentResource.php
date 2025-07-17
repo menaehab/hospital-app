@@ -75,6 +75,15 @@ class AppointmentResource extends Resource
         return auth()->user()?->can('manage_appointments');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $query->latest();
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
