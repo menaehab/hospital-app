@@ -25,7 +25,7 @@
         }
 
         .logo {
-            width: 60px;
+            width: 120px;
         }
 
         .info {
@@ -88,7 +88,11 @@
                 </p>
                 <p><span class="mr-2">{{ __('keywords.date') }}</span> {{ date('Y-m-d') }}</p>
             </div>
-            <img src="{{ asset('storage/' . $logo) }}" alt="Logo" class="logo">
+            @if ($logo)
+                <img src="{{ asset('storage/' . $logo) }}" alt="Logo" class="logo">
+            @else
+                <img src="{{ asset('images') }}/logo-with-background.jpg" alt="Logo" class="logo">
+            @endif
         </div>
 
         <!-- Table -->

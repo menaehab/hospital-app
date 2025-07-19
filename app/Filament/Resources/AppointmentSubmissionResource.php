@@ -110,7 +110,7 @@ class AppointmentSubmissionResource extends Resource
                 Tables\Actions\ViewAction::make(),
                 Tables\Actions\Action::make('print')
                     ->label(__('keywords.print'))
-                    ->url(fn (AppointmentSubmission $record) => route('print.appointment-submission', $record))
+                    ->url(fn (AppointmentSubmission $record) => route('appointment-submission.show', $record))
                     ->icon('fas-print')
                     ->openUrlInNewTab(),
             ]);

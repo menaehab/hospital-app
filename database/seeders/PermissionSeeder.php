@@ -32,6 +32,9 @@ class PermissionSeeder extends Seeder
             ['name' => 'manage_medicines', 'display_name' => 'إدارة الدواء'], // manage medicines (used by admin)
             ['name' => 'manage_medical_tests', 'display_name' => 'إدارة التحاليل'], // manage medical tests (used by admin)
             ['name' => 'manage_radiology_tests', 'display_name' => 'إدارة التحاليل'], // manage medical tests (used by admin)
+            ['name' => 'manage_prescriptions', 'display_name' => 'إدارة الروشتات'], // manage prescriptions (used by admin)
+            ['name' => 'view_his_prescriptions_only', 'display_name' => 'عرض الروشتات فقط'], // view prescriptions (used by doctor)
+            ['name' => 'add_prescriptions', 'display_name' => 'إضافة روشتات'], // add prescriptions (used by doctor)
         ];
 
         foreach ($permissions as $permission) {

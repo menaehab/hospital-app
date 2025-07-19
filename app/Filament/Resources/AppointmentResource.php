@@ -75,6 +75,15 @@ class AppointmentResource extends Resource
         return auth()->user()?->can('manage_appointments');
     }
 
+    public static function getEloquentQuery(): Builder
+    {
+        $query = parent::getEloquentQuery();
+
+        $query->latest();
+
+        return $query;
+    }
+
     public static function form(Form $form): Form
     {
         return $form
@@ -362,7 +371,7 @@ class AppointmentResource extends Resource
                                 $submission->appointments()->attach($record);
                             });
 
-                            return redirect()->route('print.appointment-submission', $submission);
+                            return redirect()->route('appointment-submission.show', $submission);
                         })->visible(function() {
                             return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');
                         })

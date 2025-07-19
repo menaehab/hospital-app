@@ -39,7 +39,7 @@ class FoodResource extends Resource
         return __('keywords.foods');
     }
 
-    protected static ?int $navigationSort = 5;
+    protected static ?int $navigationSort = 6;
 
     protected static string|array $routeMiddleware = ['canAny:manage_food'];
 
@@ -55,7 +55,7 @@ class FoodResource extends Resource
                 TextInput::make('name')
                     ->required()
                     ->maxLength(255)
-                    ->unique()
+                    ->unique(ignoreRecord: true)
                     ->label(__('keywords.name')),
             ])->columns(1);
     }

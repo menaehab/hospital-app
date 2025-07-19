@@ -11,14 +11,10 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('vital_signs', function (Blueprint $table) {
+        Schema::create('prescriptions', function (Blueprint $table) {
             $table->id();
-            $table->integer('heart_rate')->nullable();
-            $table->integer('blood_pressure_systolic')->nullable();
-            $table->integer('blood_pressure_diastolic')->nullable();
-            $table->decimal('temperature', 5, 2)->nullable();
-            $table->decimal('oxygen_saturation', 5, 2)->nullable();
             $table->foreignId('appointment_id')->constrained('appointments')->cascadeOnDelete();
+            $table->text('notes')->nullable();
             $table->timestamps();
         });
     }
@@ -28,6 +24,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('vital_signs');
+        Schema::dropIfExists('prescriptions');
     }
 };

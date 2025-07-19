@@ -15,6 +15,15 @@
                     </x-filament::button>
                 @endif
 
+                @if (auth()->user()->can('manage_prescriptions') ||
+                        auth()->user()->can('view_prescriptions') ||
+                        auth()->user()->can('add_prescriptions'))
+                    <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
+                        tag="a" href="{{ route('filament.admin.resources.prescriptions.index') }}">
+                        {{ __('keywords.prescriptions') }}
+                    </x-filament::button>
+                @endif
+
                 @if (auth()->user()->can('manage_patients') || auth()->user()->can('view_patients'))
                     <x-filament::button size="xl" class="text-xl py-6 w-full flex items-center justify-center"
                         tag="a" href="{{ route('filament.admin.resources.patients.index') }}">

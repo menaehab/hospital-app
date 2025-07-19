@@ -2,13 +2,13 @@
 
 use Livewire\Volt\Volt;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\PrintController;
+use App\Http\Controllers\AppointmentSubmissionController;
 
 Route::redirect('/', 'admin')->name('home');
 
 Route::middleware(['auth'])->group(function () {
-    Route::get('/print/appointment-submission/{submission}', [PrintController::class, 'AppointmentSubmissionShow'])->name('print.appointment-submission');
-    Route::get('/print/appointment-submission-content/{submission}', [PrintController::class, 'AppointmentSubmissionPrint'])->name('print.appointment-submission-content');
+    Route::get('/print/appointment-submission/{submission}', [AppointmentSubmissionController::class, 'show'])->name('appointment-submission.show');
+    Route::get('/print/appointment-submission-content/{submission}', [AppointmentSubmissionController::class, 'print'])->name('appointment-submission.print');
 });
 
 require __DIR__.'/auth.php';
