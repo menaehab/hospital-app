@@ -4,18 +4,18 @@ namespace App\Http\Controllers;
 
 use App\Models\AppointmentSubmission;
 
-class PrintController extends Controller
+class AppointmentSubmissionController extends Controller
 {
-    public function AppointmentSubmissionShow(AppointmentSubmission $submission)
+    public function show(AppointmentSubmission $submission)
     {
         if($submission->is_printed && !auth()->user()->can('view_reports')){
             abort(403, __('keywords.already_printed'));
         }
 
-        return view('prints.appointment-submission', compact('submission'));
+        return view('appointment-submissions.page', compact('submission'));
     }
 
-    public function AppointmentSubmissionPrint($id)
+    public function print($id)
     {
         $submission = AppointmentSubmission::findOrFail($id);
 
@@ -37,6 +37,6 @@ class PrintController extends Controller
             'total_amount' => $total_amount
         ]);
 
-        return view('prints.appointment-submission-content', compact('submission', 'logo'));
+        return view('appointment-submissions.print', compact('submission', 'logo'));
     }
 }

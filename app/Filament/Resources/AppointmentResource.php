@@ -371,7 +371,7 @@ class AppointmentResource extends Resource
                                 $submission->appointments()->attach($record);
                             });
 
-                            return redirect()->route('print.appointment-submission', $submission);
+                            return redirect()->route('appointment-submission.show', $submission);
                         })->visible(function() {
                             return auth()->user()->can('appointment_submit') || auth()->user()->can('manage_appointments');
                         })

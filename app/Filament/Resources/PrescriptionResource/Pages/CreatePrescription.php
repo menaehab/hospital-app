@@ -123,5 +123,9 @@ class CreatePrescription extends CreateRecord
             });
             $prescription->foods()->sync($foods);
         }
+
+        $appointment->status = 'finished';
+        $appointment->end_time = now();
+        $appointment->save();
     }
 }

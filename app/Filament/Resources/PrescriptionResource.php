@@ -201,11 +201,44 @@ class PrescriptionResource extends Resource
                             ->label(__('keywords.medicines'))
                             ->schema([
                                 Select::make('medicine_id')
-                                    ->label(__('keywords.medicine_name'))
-                                    ->options(Medicine::pluck('name', 'id'))
-                                    ->searchable()
-                                    ->required(),
+                                ->label(__('keywords.medicine_name'))
+                                ->options(function () {
+                                    $doctorId = Auth::id();
 
+                                    // Get frequently used medicine IDs by this doctor
+                                    $frequentMedicineIds = DB::table('medicine_user')
+                                        ->where('user_id', $doctorId)
+                                        ->pluck('medicine_id')
+                                        ->toArray();
+
+                                    // Fetch frequently used medicines
+                                    $frequentMedicines = collect();
+                                    if (!empty($frequentMedicineIds)) {
+                                        $frequentMedicines = Medicine::whereIn('id', $frequentMedicineIds)
+                                            ->get()
+                                            ->mapWithKeys(function ($medicine) {
+                                                return [
+                                                    $medicine->id => '⭐ ' . $medicine->name,
+                                                ];
+                                            });
+                                    }
+
+                                    // Fetch other medicines
+                                    $otherMedicines = Medicine::when(!empty($frequentMedicineIds), function ($query) use ($frequentMedicineIds) {
+                                            return $query->whereNotIn('id', $frequentMedicineIds);
+                                        })
+                                        ->get()
+                                        ->mapWithKeys(function ($medicine) {
+                                            return [
+                                                $medicine->id => $medicine->name,
+                                            ];
+                                        });
+
+                                    // Merge both lists, frequent on top
+                                    return $frequentMedicines->union($otherMedicines);
+                                })
+                                ->searchable()
+                                ->required(),
                                 TextInput::make('time_per_day')
                                     ->label(__('keywords.time_per_day'))
                                     ->numeric()
@@ -374,9 +407,14 @@ class PrescriptionResource extends Resource
     {
         $query = parent::getEloquentQuery();
 
-        if (Auth::user()?->can('view_his_prescriptions_only') && !Auth::user()?->can('manage_prescriptions')) {
+        $query->latest();
+
+        if (Auth::user()?->can('view_his_prescriptions_only')) {
             $query->whereHas('appointment.visitType', function ($q) {
                 $q->where('doctor_id', Auth::id());
+            });
+            $query->whereHas('appointment', function ($q) {
+                $q->whereDoesntHave('submissions');
             });
         }
 
